@@ -3,3 +3,4 @@
 // § 최초 파일 등록은 아무나 할 것
 int printMyName1(void);
 int printMyName2(void);
+int printMyName3(void);
