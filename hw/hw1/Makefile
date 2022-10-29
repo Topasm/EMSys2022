@@ -12,9 +12,6 @@ main.o: main.c myProject.h
 
 3.o: 3.c myProject.h
 	gcc -c -o 3.o 3.c
-
-2.o: 2.c 
-	gcc -c -o 2.o 2.c
 	
 clean:
 	rm *.o final.elf
