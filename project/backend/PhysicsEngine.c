@@ -1,4 +1,5 @@
-#include <bool.h>
+#include <stdbool.h>
+#include <stdio.h>
 
 
 struct object
