@@ -55,6 +55,11 @@ return 4; }
 return 0;
 }
 
+static int hello_release(struct inode *node, struct file *pfile)
+{ printk("hello_release enter\n");
+return 0;
+}
+
 static const struct file_operations hello_fops = {
 .owner = THIS_MODULE,
 .open = hello_open,
