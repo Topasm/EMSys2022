@@ -1,7 +1,4 @@
 // 모듈형 문자 디바이스 드라이버(hello_drv.c) 및
-// 응용프로그램 설계, 실행 순서 요약
-//  PC에서
-//  디바이스 드라이버 “hello_drv.c” 작성
 
 //  Makefile 작성
 //  Compile(make명령) 후, Target으로 ‘hello_drv.ko’ 를 전송 (scp, minicom, whatever)
