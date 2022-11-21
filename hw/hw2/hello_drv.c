@@ -95,7 +95,7 @@ static const struct file_operations hello_fops = {
     .write = hello_write,
     .release = hello_release,
     .unlocked_ioctl = hello_ioctl,
-    .llseek = hello_lseek,
+    //.llseek = hello_llseek,
 };
 
 int flagRegisterSuccess = 0;
@@ -124,20 +124,20 @@ void __exit exit_hello(void)
     printk("Good-bye~ \n");
 }
 
-static loff_t hello_llseek(struct file *file, loff_t offset, int orig)
-{ // file read/write pointer: file->f_pos
-    loff_t newPos = 0;
-    if (orig == 0)
-        newPos = offset; // SEEK_SET
-    else if (orig == 1)
-        newPos = file->f_pos + offset; // SEEK_CUR
-    else
-        newPos = 2000 - offset; // SEEK_END, 내부 버퍼 사이즈=2000
-    file->f_pos = newPos;
-    printk(“New File R / W Ptr
-           : % d\n”, (int)file->f_pos);
-    return file->f_pos;
-}
+// static loff_t hello_llseek(struct file *file, loff_t offset, int orig)
+// { // file read/write pointer: file->f_pos
+//     loff_t newPos = 0;
+//     if (orig == 0)
+//         newPos = offset; // SEEK_SET
+//     else if (orig == 1)
+//         newPos = file->f_pos + offset; // SEEK_CUR
+//     else
+//         newPos = 2000 - offset; // SEEK_END, 내부 버퍼 사이즈=2000
+//     file->f_pos = newPos;
+//     printk(“New File R / W Ptr
+//            : % d\n”, (int)file->f_pos);
+//     return file->f_pos;
+// }
 
 module_init(init_hello); //  모듈 로딩시(insmod) 해당 함수 호출
 module_exit(exit_hello); //  모듈 제거시(rmmod) 해당 함수 호출
