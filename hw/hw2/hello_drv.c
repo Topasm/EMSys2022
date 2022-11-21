@@ -33,13 +33,18 @@ static int hello_ioctl(struct file *flip, unsigned int cmd, unsigned long arg) /
     switch (_IOC_NR(cmd))
     {
     case 99:
-        printk("->% d\n", _IOC_SIZE(cmd)); // should be 20 copy_from_user(array, arg, _IOC_SIZE( cmd ) ); //do something.
+        printk("->% d\n", _IOC_SIZE(cmd)); // should be 20 
+        copy_from_user(array, arg, _IOC_SIZE( cmd ) ); 
+        //do something.
         
         printk("99번 작동");
         
         break;
     case 98:
-        printk("->% d\n", _IOC_SIZE(cmd)); // should be 4 copy_from_user(&cnt, arg, _IOC_SIZE( cmd )); for (k=0;k<cnt;k++) printk (“%c”, array [k]); printk(“\n”);break;
+        printk("->% d\n", _IOC_SIZE(cmd)); // should be 4 
+        copy_from_user(&cnt, arg, _IOC_SIZE( cmd )); 
+            for (k=0;k<cnt;k++) printk ("%c", array [k]); printk("\n");
+        break;
     default:
         break;
     }
