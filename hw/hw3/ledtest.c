@@ -70,12 +70,6 @@ int main(void)
         ledLibStatus();
         sleep(1);
     }
-    for (int i = 7; i == 0; i--)
-    {
-        ledOnOff(i, OFF);
-        ledLibStatus();
-        sleep(1);
-    }
 
 
     ledLibExit();
