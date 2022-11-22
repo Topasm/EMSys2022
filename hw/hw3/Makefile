@@ -4,4 +4,6 @@ libMyPeri.a: button.o led.o
 button.o: button.h button.c
 	arm-linux-gnueabi-gcc -c button.c -o button.o
 led.o: led.h led.c
-	arm-linux-gnueabi-gcc -c ledtest.c -o led.o
+	arm-linux-gnueabi-gcc -c led.c -o led.o
+clean: 
+	rm -f *.o *.a
