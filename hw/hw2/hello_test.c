@@ -15,6 +15,14 @@ int main(int argc, char **argv)
 {
     char data[4] = {'5', '6', '7', '8'};
     int fd;
+    char array[20];
+    unsigned int inputCmd = _IOW(0x55, 99, array);
+    unsigned long returnValue = ioctl (fd, inputCmd, array);
+
+    inputCmd = _IOW(0x55, 98, int);
+    int count = 5;
+    returnValue = ioctl (fd, inputCmd, &count);
+
     printf("enter test\n");
     // open driver
     fd = open(HELLO_DRIVER_NAME, O_RDWR);
@@ -37,14 +45,7 @@ int main(int argc, char **argv)
         unsigned long returnValue = ioctl(fd, inputCmd, 0);
     }
 
-    char array[20];
-    unsigned int inputCmd = _IOW(0x55, 99, array);
-    unsigned long returnValue = ioctl (fd, inputCmd, array);
-
-    inputCmd = _IOW(0x55, 98, int);
-    int count = 5;
-    returnValue = ioctl (fd, inputCmd, &count);
-
+  
     close(fd);
     return 0;
 }
