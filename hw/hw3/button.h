@@ -9,4 +9,8 @@ typedef struct
 } BUTTON_MSG_T;
 int buttonInit(void);
 int buttonExit(void);
+
+int probeButtonPath(char *newPath);
+int buttonStatus(void);
+static void *buttonThFunc(void);
 #endif
