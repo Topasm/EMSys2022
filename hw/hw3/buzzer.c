@@ -23,7 +23,7 @@ const int musicScale[MAX_SCALE_STEP] = // Just Intonation : 13 sounds
         277, // C#
         294, // D
         311, // D#
-        330, // E
+        330, // E/home/soomin/vscode/linux_kernel//home/soomin/vscode/linux_kernel/
         349, // F
         370, // F#
         392, // G
@@ -90,20 +90,20 @@ void setFrequency(int frequency)
     dprintf(fdFrequency, "%d", frequency);
 }
 
-void buzzerExit(void)
+int buzzerExit(void)
 {
     buzzerEnable(0);
 	close(fdEnable);
 	close(fdFrequency);
 }
 
-void buzzerPlaySong(int scale) // C:0, C#:1, ... , A:9, A#:10, B:11
+int buzzerPlaySong(int scale) // C:0, C#:1, ... , A:9, A#:10, B:11
 {
     setFrequency(musicScale[scale]);
     buzzerEnable(1);
 }
 
-void buzzerStopSong(void)
+int buzzerStopSong(void)
 {
     buzzerEnable(0);
 }
