@@ -22,6 +22,7 @@ static int hello_ioctl(struct file *flip, unsigned int cmd, unsigned long arg) /
 {
     
     int k = 0;
+    int cnt = 0;
     if (_IOC_TYPE(cmd) != 0x55)
     {
         printk("Wrong Magic #!\n");
@@ -29,20 +30,18 @@ static int hello_ioctl(struct file *flip, unsigned int cmd, unsigned long arg) /
     }
     switch (_IOC_NR(cmd))
     {
-
         //그외 에러처리 (ex, *filepos > 2000 ) 등 처리를 해 줘야 함.
 
     case 99:
         printk("\tIOCTL Size: %d\n", _IOC_SIZE(cmd)); // should be 8
-        copy_from_user(&array, arg, _IOC_SIZE(cmd));
+        printk("Recieved CMD:");
+        copy_from_user(array, arg, _IOC_SIZE(cmd));
         // do something.
-
-        printk("99번 작동");
-
         break;
     case 98:
         printk("\tIOCTL Size: %d\n", _IOC_SIZE(cmd)); // should be 8
-        copy_from_user(&array, arg, _IOC_SIZE(cmd));
+        printk("Recieved CMD:");
+        copy_from_user(array, arg, _IOC_SIZE(cmd));
         for (k = array[0]; k < (array[0] + array[1]); k++)
             printk("%c", array[k]);
         printk("\n");
