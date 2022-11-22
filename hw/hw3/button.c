@@ -9,7 +9,7 @@
 #include <pthread.h>
 #include "button.h"
 // first read input device
-#define INPUT_DEVICE_LIST "/dev/input/event" //실제 디바이스 드라이버 노드파일: 뒤에 숫자가 붙음., ex)/dev/input/event5
+#define INPUT_DEVICE_LIST "/dev/input/event1" //실제 디바이스 드라이버 노드파일: 뒤에 숫자가 붙음., ex)/dev/input/event5
 #define PROBE_FILE "/proc/bus/input/devices" // PPT에 제시된 "이 파일을 까보면 event? 의 숫자를 알수 있다"는 바로 그 파일
 #define HAVE_TO_FIND_1 "N: Name=\"ecube-button\"\n"
 #define HAVE_TO_FIND_2 "H: Handlers=kbd event"
@@ -18,17 +18,6 @@ static int fd = 0;
 static int msgID = 0;
 static pthread_t buttonTh_id;
 char buttonPath[256] = {0,};
-    
-int buttonInit(void){
-if (probeButtonPath(buttonPath) == 0)
-return 0;
-fd=open (buttonPath, O_RDONLY);
-msgID = msgget (MESSAGE_ID, IPC_CREAT|0666);
-pthread_create(&buttonTh_id, NULL, buttonThFunc, NULL);
-return 1;
-}
-//buttonThFunc 쓰레드 함수 작성 필요
-//while(1){을 돌면서 / read(); / msgsnd(); }
 
 
 int buttonInit(void)
@@ -48,22 +37,17 @@ static void *buttonThFunc(void)
 {
     BUTTON_MSG_T Data;
     Data.messageNum = 1;
-    struct input_event B;
+    struct input_event stEvent;
     while (1)
     {
-        read(fd, &B, sizeof(B));
-        if ((B.type == EV_KEY) && (B.value == 0))
+        read(fd, &stEvent, sizeof(stEvent));
+        if ((stEvent.type == EV_KEY) && (stEvent.value == 0))
         {
-            Data.keyInput = B.code;
+            Data.keyInput = stEvent.code;
             msgsnd(msgID, &Data, sizeof(Data)-4, 0);
         }
     }
 }
-
-
-
-
-
 
 int probeButtonPath(char *newPath)
 {

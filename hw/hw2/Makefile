@@ -1,5 +1,6 @@
 obj-m := hello_drv.o
-KDIR := /home/soomin/vscode/linux_kernel/
+KDIR := ~/targetSrc/linux_kernel
+
 PWD := $(shell pwd) 
 
 export ARCH=arm

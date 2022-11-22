@@ -10,6 +10,7 @@
 #include <unistd.h>
 #define LED_DRIVER_NAME "/dev/periled"
 
+
 void doHelp(void)
 {
 printf("ledtest <hex byte> :data bit0 operation 1=>on 0=>off\n");
@@ -24,9 +25,9 @@ unsigned int data = 0;
 int fd;
 if (argc < 2 )
 {
-perror(" Args number is less than 2\n");
-doHelp();
-return 1;
+    perror(" Args number is less than 2\n");
+    doHelp();
+    return 1;
 }
 data = strtol(argv[1],NULL,16); //String을 16진수로 가정하고 integer형으로 변환
 printf("wrate data :0x%X\n", data);
