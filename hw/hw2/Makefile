@@ -1,5 +1,5 @@
 obj-m := hello_drv.o
-KDIR := /home/kimsh/linux_source/linux_kernel/
+KDIR := /home/soomin/vscode/linux_kernel/
 PWD := $(shell pwd) 
 
 export ARCH=arm

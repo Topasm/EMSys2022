@@ -51,6 +51,7 @@ static int hello_ioctl(struct file *flip, unsigned int cmd, unsigned long arg) /
         break;
     }
 }
+
 static int hello_open(struct inode *node, struct file *pfile)
 {
     printk("hello_open enter\n");
@@ -141,6 +142,33 @@ void __exit exit_hello(void)
 //            : % d\n”, (int)file->f_pos);
 //     return file->f_pos;
 // }
+
+static loff_t hello_lseek(struct file *file, loff_t offset, int orig)
+{ // file read/write pointer: file->f_pos
+    loff_t newPos = 0;
+    printk("hello lseek working\n");
+    if (orig == 0)
+    {
+        newPos = offset; // SEEK_SET
+    }
+    else if (orig == 1)
+    {
+        newPos = file->f_pos + offset; // SEEK_CUR
+    }
+    else
+    {
+        newPos = BUFFER_SIZE - offset; // SEEK_END, 내부 버퍼 사이즈=2000
+    }
+
+    if (newPos > BUFFER_SIZE)
+        newPos = BUFFER_SIZE;
+    if (newPos < 0)
+        newPos = 0;
+    file->f_pos = newPos;
+    printk("New File R / W Ptr %d\n", (int)file->f_pos);
+    return file->f_pos;
+}
+
 
 module_init(init_hello); //  모듈 로딩시(insmod) 해당 함수 호출
 module_exit(exit_hello); //  모듈 제거시(rmmod) 해당 함수 호출
