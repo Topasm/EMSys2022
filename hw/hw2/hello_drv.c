@@ -18,8 +18,17 @@
 
 #define HELLO_MAJOR_NUM 290
 #define HELLO_NAME "hello"
+#define BUFFER_SIZE 2000
 
 static char array[2000]; // Global 변수, Device Driver에서 사용
+
+static int hello_open(struct inode *, struct file *);
+static int hello_close(struct inode *, struct file *);
+static ssize_t hello_read(struct file *, char __user *, size_t , loff_t *);
+static ssize_t hello_write(struct file *, const char *, size_t, loff_t *);
+static loff_t hello_lseek(struct file *file, loff_t offset, int orig);
+
+
 
 static int hello_ioctl(struct file *flip, unsigned int cmd, unsigned long arg) // from K.2.6.36
 {
