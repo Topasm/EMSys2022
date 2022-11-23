@@ -17,10 +17,11 @@ int buttonInit(void)
     return msgID;
 }
 // buttonThFunc 쓰레드 함수 작성 필요
-// while(1){을 돌면서 / read(); / msgsnd(); }
+
 
 static void *buttonThFunc(void)
 {
+    // while(1){을 돌면서 / read(); / msgsnd(); }
     BUTTON_MSG_T Data;
     Data.messageNum = 1;
     struct input_event stEvent;
