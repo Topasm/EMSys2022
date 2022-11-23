@@ -9,18 +9,19 @@ void exit_hello(void);
 
 static int hello_open(struct inode *, struct file *);
 static int hello_close(struct inode *, struct file *);
-static ssize_t hello_read(struct file *, char __user *, size_t , loff_t *);
+static ssize_t hello_read(struct file *, char __user *, size_t, loff_t *);
 static ssize_t hello_write(struct file *, const char *, size_t, loff_t *);
 static loff_t hello_lseek(struct file *file, loff_t offset, int orig);
 
 #define HELLO_MAJOR_NUM 290
 #define HELLO_NAME "hello"
 #define BUFFER_SIZE 2000
+
 static char array[BUFFER_SIZE]; // Global 변수, Device Driver에서 사용
 
 static int hello_ioctl(struct file *flip, unsigned int cmd, unsigned long arg) // from K.2.6.36
 {
-    
+
     int k = 0;
     int cnt = 0;
     if (_IOC_TYPE(cmd) != 0x55)
@@ -28,6 +29,7 @@ static int hello_ioctl(struct file *flip, unsigned int cmd, unsigned long arg) /
         printk("Wrong Magic #!\n");
         return -1;
     }
+
     switch (_IOC_NR(cmd))
     {
         //그외 에러처리 (ex, *filepos > 2000 ) 등 처리를 해 줘야 함.
@@ -36,17 +38,28 @@ static int hello_ioctl(struct file *flip, unsigned int cmd, unsigned long arg) /
         printk("\tIOCTL Size: %d\n", _IOC_SIZE(cmd)); // should be 8
         printk("Recieved CMD:");
         copy_from_user(array, arg, _IOC_SIZE(cmd));
+        for (k = 0; k < 10; k++)
+            printk("%d", array[k]);
+        printk("\n");
+
         // do something.
         break;
     case 98:
         printk("\tIOCTL Size: %d\n", _IOC_SIZE(cmd)); // should be 8
         printk("Recieved CMD:");
         copy_from_user(array, arg, _IOC_SIZE(cmd));
-        for (k = array[0]; k < (array[0] + array[1]); k++)
-            printk("%c", array[k]);
+        for (k = 0; k < 10; k++)
+            printk("%d", array[k]);
         printk("\n");
         break;
     default:
+        printk("Recieved CMD:");
+        copy_from_user(array, arg, _IOC_SIZE(cmd));
+        int i = 0;
+        for (k = 0; k < 7; k++)
+            printk("%d", array[k]);
+        printk("\n");
+
         break;
     }
 }
@@ -61,6 +74,7 @@ static ssize_t hello_read(struct file *pfile, char __user *pBuff, size_t size, l
     printk("hello_read enter\n");
     copy_to_user(pBuff, &array[*filepos], size);
     *filepos += size;
+    
     return size;
 }
 
@@ -69,6 +83,7 @@ static ssize_t hello_write(struct file *pfile, const char __user *pBuff, size_t 
     printk("hello_write enter\n");
     copy_from_user(&array[*filepos], pBuff, size);
     *filepos += size;
+    
     return size;
 }
 
@@ -117,7 +132,7 @@ void __exit exit_hello(void)
 static loff_t hello_lseek(struct file *file, loff_t offset, int orig)
 { // file read/write pointer: file->f_pos
     loff_t newPos = 0;
-    printk("hello lseek working\n");
+    // printk("");
     if (orig == 0)
     {
         newPos = offset; // SEEK_SET
@@ -135,6 +150,7 @@ static loff_t hello_lseek(struct file *file, loff_t offset, int orig)
         newPos = BUFFER_SIZE;
     if (newPos < 0)
         newPos = 0;
+
     file->f_pos = newPos;
     printk("New File R / W Ptr %d\n", (int)file->f_pos);
     return file->f_pos;
