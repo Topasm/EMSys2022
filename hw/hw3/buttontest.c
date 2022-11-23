@@ -1,22 +1,32 @@
 #include "button.h"
 int msgID = 0;
-//메시지를 받아서 작동하는듯
+
 int main(int argc, char *argv[])
 {
 
     msgID = buttonInit();
+    printf("buttondriver\n");
 
     BUTTON_MSG_T buttonMsg;
     int recievedVal = 0;
-    recievedVal = msgrcv(msgID, &buttonMsg, sizeof(int), 0, 0);
-    if(recievedVal <0)
-    {printf("error");
+
+    while (1)
+    {
+        recievedVal = msgrcv(msgID, &buttonMsg, sizeof(buttonMsg) - 4, 0, IPC_NOWAIT);
+        if (recievedVal == -1)
+        {
+            break;
+        }
     }
 
     while (1)
     {
+        recievedVal = msgrcv(msgID, &buttonMsg, sizeof(buttonMsg) - 4, 0, 0);
+        if (recievedVal < 0)
+        {
+            printf("error");
+        }
 
-        //printf("EV_KEY(");
         switch (buttonMsg.keyInput)
         {
         case KEY_VOLUMEUP:
@@ -37,6 +47,14 @@ int main(int argc, char *argv[])
         case KEY_VOLUMEDOWN:
             printf("Volume down key):");
             break;
+        }
+        if (buttonMsg.pressed)
+        {
+            printf("pressed\n");
+        }
+        else
+        {
+            printf("released\n");
         }
     }
     buttonExit();

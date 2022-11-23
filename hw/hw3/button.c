@@ -16,7 +16,7 @@ int buttonInit(void)
     pthread_create(&buttonTh_id, NULL, buttonThFunc, NULL);
     return msgID;
 }
-// buttonThFunc 쓰레드 함수 작성 필요
+
 
 static void *buttonThFunc(void)
 {
