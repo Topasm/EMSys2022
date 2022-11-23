@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     while (1)
     {
 
-        printf("EV_KEY(");
+        //printf("EV_KEY(");
         switch (buttonMsg.keyInput)
         {
         case KEY_VOLUMEUP:

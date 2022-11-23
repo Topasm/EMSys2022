@@ -69,6 +69,7 @@ int main(void)
         ledOnOff(i, ON);
         ledLibStatus();
         sleep(1);
+        ledOnOff(i, OFF);
     }
 
 

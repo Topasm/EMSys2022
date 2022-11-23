@@ -18,7 +18,6 @@ int buttonInit(void)
 }
 // buttonThFunc 쓰레드 함수 작성 필요
 
-
 static void *buttonThFunc(void)
 {
     // while(1){을 돌면서 / read(); / msgsnd(); }
@@ -68,12 +67,15 @@ int probeButtonPath(char *newPath)
         }
     }
 
-    int buttonExit(void)
+    if (returnValue == 1)
     {
-        close(fp);
+        sprintf(newPath, "%s%d", INPUT_DEVICE_LIST, number);
     }
 
-    if (returnValue == 1)
-        sprintf(newPath, "%s%d", INPUT_DEVICE_LIST, number);
     return returnValue;
+}
+int buttonExit(void)
+{
+    pthread_join(buttonTh_id, (void**)0);
+    close(fd);
 }
