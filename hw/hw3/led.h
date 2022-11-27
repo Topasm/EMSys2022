@@ -21,5 +21,5 @@ int ledLibInit(void);
 int ledOnOff(int ledNum, int onOff);
 int ledLibStatus(void);
 int ledLibExit(void);
-#endif _LED_H_
+#endif 
 
