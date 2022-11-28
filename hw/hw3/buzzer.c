@@ -1,7 +1,7 @@
 
 #include "buzzer.h"
 
-const int musicScale[MAX_SCALE_STEP] =
+const int musicScale[MAX_SCALE_STEP] =  //음계를 주파수값으로 설정
     {
         262, // do
         294,
@@ -12,15 +12,16 @@ const int musicScale[MAX_SCALE_STEP] =
         494, // si
         523};
 
-void doHelp(void)
+void doHelp(void)   //사용법 출력
 {
+
     printf("Usage:\n");
     printf("buzzertest <buzzerNo> \n");
     printf("buzzerNo: \n");
     printf("do(1),re(2),mi(3),fa(4),sol(5),ra(6),si(7),do(8) \n");
     printf("off(0)\n");
 }
-int findBuzzerSysPath()
+int findBuzzerSysPath() //버저 경로 찾기: /sys/bus/platform/devices/peribuzzer.XX의 XX 결정하는 함수
 {
     DIR *dir_info = opendir(BUZZER_BASE_SYS_PATH);
     int ifNotFound = 1;
@@ -42,7 +43,7 @@ int findBuzzerSysPath()
     printf("find %s\n", gBuzzerBaseSysDir);
     return ifNotFound;
 }
-void buzzerEnable(int bEnable)
+void buzzerEnable(int bEnable)    //주파수 출력 Enable
 {
     char path[200];
     sprintf(path, "%s%s", gBuzzerBaseSysDir, BUZZER_ENABLE_NAME);
@@ -54,7 +55,7 @@ void buzzerEnable(int bEnable)
     close(fd);
 }
 
-void setFrequency(int frequency)
+void setFrequency(int frequency)    //주파수 값 설정
 {
     char path[200];
     sprintf(path, "%s%s", gBuzzerBaseSysDir, BUZZER_FREQUENCY_NAME);
@@ -74,7 +75,12 @@ void buzzerInit(void)
 
 }
 
-void buzzerPlaySong(int scale)
+void buzzerExit(void)
+{
+    buzzerEnable(0);
+}
+
+void buzzerPlaySong(int scale)  //입력된 값으로 계이름별 주파수를 선택하여 부저 신호 출력
 {
     if(scale> MAX_SCALE_STEP)
     {
@@ -82,11 +88,11 @@ void buzzerPlaySong(int scale)
     }
     setFrequency(musicScale[scale]);
     buzzerEnable(1);
-    
+    // C:0, D:1, ... , B:6, C:7
 }
 
 
-void buzzerStopSong(void)
+void buzzerStopSong(void)   //버저 소리를 멈추는 함수
 {
     buzzerEnable(0);
 }
