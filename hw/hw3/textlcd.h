@@ -43,7 +43,7 @@
 int txtlcd_Init(void);
 void lcdtextwrite(const char *str1, const char *str2, int lineFlag);
 void txtlcd_off(void);
-
+#define TEXTLCD_DRIVER_NAME "/dev/peritextlcd"
 typedef struct TextLCD_tag
 {
    unsigned char cmd; //
