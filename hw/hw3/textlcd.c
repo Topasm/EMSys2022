@@ -1,12 +1,8 @@
 #include "textlcd.h"
-
-
 stTextLCD stlcd;
 int fd;
 int len1;
 int len2;
-
-#define TEXTLCD_DRIVER_NAME "/dev/peritextlcd"
 
 int txtlcd_Init(void)
 {
