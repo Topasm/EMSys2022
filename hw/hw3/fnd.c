@@ -26,12 +26,14 @@ int fndDisp(int num , int dotflag)
    temp = num %100;      stWriteData.DataNumeric[4] = temp /10;
                      stWriteData.DataNumeric[5] = num %10;
 
+   //노드 열기                  
    fd = open(FND_DRIVER_NAME,O_RDWR);
    if ( fd < 0 )
    {
       perror("driver open error.\n");
       return 0;
    }   
+   // struct에 data 입력
    write(fd,&stWriteData,sizeof(stFndWriteForm));
    close(fd);
    return 1;
@@ -40,6 +42,7 @@ int fndDisp(int num , int dotflag)
 int fndOff()
 {
    int fd,i;
+   //현재 FND 상태를 저장
    stFndWriteForm stWriteData;
    
    for (i = 0; i < MAX_FND_NUM ; i++ )

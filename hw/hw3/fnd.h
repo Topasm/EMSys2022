@@ -1,3 +1,4 @@
+//write시 사용하는 데이터 구조체 정의
 #ifndef __FND_DRV_H__
 #define __FND_DRV_H__
 #define MAX_FND_NUM 6
@@ -17,11 +18,14 @@ int fndDisp(int num , int dotflag);
 void fnddoHelp(void);
 int fndOff();
 
-
+// 구조체 형식
 typedef struct FNDWriteDataForm_tag
 {
+    //6개의 FND Array에 표시 될 숫자가 들어감
     char DataNumeric[FND_DATA_BUFF_LEN];
+    //점의 점등 유무 표시
     char DataDot[FND_DATA_BUFF_LEN];
+    //각 DataNumeric의 데이터 Valid 표시
     char DataValid[FND_DATA_BUFF_LEN];
 } stFndWriteForm, *pStFndWriteForm;
 
