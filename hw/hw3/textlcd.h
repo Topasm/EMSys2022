@@ -40,9 +40,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-int txtlcd_Init(void);
-void lcdtextwrite(const char *str1, const char *str2, int lineFlag);
-void txtlcd_off(void);
 #define TEXTLCD_DRIVER_NAME "/dev/peritextlcd"
 typedef struct TextLCD_tag
 {
@@ -52,5 +49,11 @@ typedef struct TextLCD_tag
 
    char TextData[LINE_NUM][LINE_BUFF_NUM];
 } stTextLCD, *pStTextLCD;
+
+void lcdtextwrite(const char *str1, const char *str2, int lineFlag);
+int txtlcd_Init(void);
+
+void txtlcd_off(void);
+void lcdtextwrite(const char *str1, const char *str2, int lineFlag);
 
 #endif //  __TEXTLCD_DRV_H__

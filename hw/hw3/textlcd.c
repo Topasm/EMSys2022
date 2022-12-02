@@ -19,7 +19,7 @@ void lcdtextwrite(const char *str1, const char *str2, int lineFlag)
     printf("linenum :%d\n", lineFlag);
 
     if (lineFlag == 1)
-    { // firsst line
+    { // first line
         stlcd.cmdData = CMD_DATA_WRITE_LINE_1;
         printf("LCD Write:%s\n", str1);
         len1 = strlen(str1);
@@ -48,10 +48,10 @@ void lcdtextwrite(const char *str1, const char *str2, int lineFlag)
     }
     else if(lineFlag == 0)
     {
-        //both line
+        //both linelcdtextwrite(str1, str2,0);
          stlcd.cmdData = CMD_DATA_WRITE_BOTH_LINE;
         len1 = strlen(str1);
-        len2 = strlen(str1);
+        len2 = strlen(str2);
         if (len2 > COLUMN_NUM)
         {
             memcpy(stlcd.TextData[stlcd.cmdData - 1], str2, COLUMN_NUM);
@@ -74,7 +74,7 @@ void lcdtextwrite(const char *str1, const char *str2, int lineFlag)
 }
 void txtlcd_off(void)
 {
-    char str[] = {"                  "};
+    char str[] = {"                          "};
     lcdtextwrite(str,str, 1);
     lcdtextwrite(str,str, 2);
     close(fd);
