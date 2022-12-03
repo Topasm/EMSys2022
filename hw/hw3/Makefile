@@ -1,7 +1,7 @@
 all: libMyPeri.a
 
-libMyPeri.a: button.o led.o buzzer.o fnd.o textlcd.o colorled.o
-	arm-linux-gnueabi-ar rc libMyPeri.a led.o button.o buzzer.o fnd.o textlcd.o colorled.o
+libMyPeri.a: button.o led.o buzzer.o fnd.o textlcd.o colorled.o accelMagGyro.o
+	arm-linux-gnueabi-ar rc libMyPeri.a led.o button.o buzzer.o fnd.o textlcd.o colorled.o accelMagGyro.o
 button.o: button.h button.c
 	arm-linux-gnueabi-gcc -c button.c -o button.o
 led.o: led.h led.c
@@ -14,5 +14,7 @@ textlcd.o: textlcd.h textlcd.c
 	arm-linux-gnueabi-gcc -c textlcd.c -o textlcd.o
 colorled.o: colorled.h colorled.c
 	arm-linux-gnueabi-gcc -c colorled.c -o colorled.o
+accelMagGyro.o: accelMagGyro.h accelMagGyro.c
+	arm-linux-gnueabi-gcc -c accelMagGyro.c -o accelMagGyro.o
 clean: 
 	rm -f *.o *.a
