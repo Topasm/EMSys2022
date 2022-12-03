@@ -1,33 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <malloc.h>
-#include <string.h>
-#include <unistd.h>     // for open/close
-#include <fcntl.h>      // for O_RDWR
-#include <sys/ioctl.h>  // for ioctl
-#include <sys/mman.h>
-#include <linux/fb.h>   // for fb_var_screeninfo, FBIOGET_VSCREENINFO
+
 #include "libfbdev.h"
+static unsigned long sbuffer[(1280*600*sizeof(unsigned long)*2)];	//스크린 버퍼
 
-#define FBDEV_FILE0 "/dev/fb0"
-
-
-static int fbfd0,fbfd1;
-static int fbHeight=0;	//현재 하드웨어의 사이즈
-static int fbWidth=0;	//현재 하드웨어의 사이즈
-static unsigned long   *pfbmap;	//프레임 버퍼
-static struct fb_var_screeninfo fbInfo;	//To use to do double buffering.
-static struct fb_fix_screeninfo fbFixInfo;	//To use to do double buffering.
-
-
-#define PFBSIZE 			(fbHeight*fbWidth*sizeof(unsigned long)*2)	//Double Buffering
-#define DOUBLE_BUFF_START	(fbHeight*fbWidth)	///Double Swaping
-static int currentEmptyBufferPos = 0;
-//1 Pixel 4Byte Framebuffer.
 
 
 int fb_init(int * screen_width, int * screen_height, int * bits_per_pixel, int * line_length)
 {
+	
     struct  fb_fix_screeninfo fbfix;
 
 	if( (fbfd0 = open(FBDEV_FILE0, O_RDWR)) < 0)
@@ -65,6 +44,8 @@ int fb_init(int * screen_width, int * screen_height, int * bits_per_pixel, int *
 
 	pfbmap  =   (unsigned long *)
         mmap(0, PFBSIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fbfd0, 0);
+
+	
 	
 	if ((unsigned)pfbmap == (unsigned)-1)
     {
@@ -123,69 +104,7 @@ void fb_close(void)
     close( fbfd0);
 }
 
-void fb_write_reverse(char* picData, int picWidth, int picHeight)
-{
-	int coor_y=0;
-	int coor_x=0;
-	int targetHeight = (fbHeight<picHeight)?fbHeight:picHeight;	//if Screen과 파일 사이즈가 안맞으면
-	int targetWidth = (fbWidth<picWidth)?fbWidth:picWidth;		//if Screen과 파일 사이즈가 안맞으면
-	
-	for(coor_y = 0; coor_y < targetHeight; coor_y++) 
-	{
-		int bmpYOffset = coor_y*picWidth*4; ///Every 1Pixel requires 4Bytes.
-		int bmpXOffset = 0;
-		for (coor_x=0; coor_x < targetWidth; coor_x++)
-		{
-			//BMP: B-G-R로 인코딩 됨, FB: 0-R-G-B로 인코딩 됨.
-			pfbmap[coor_y*fbWidth+ (coor_x) + currentEmptyBufferPos] = 
-				((unsigned long)(picData[bmpYOffset+bmpXOffset+0])<<16) 	+
-				((unsigned long)(picData[bmpYOffset+bmpXOffset+1])<<8) 		+
-				((unsigned long)(picData[bmpYOffset+bmpXOffset+2]));
-			bmpXOffset+=4;	//4 Byte.
-		}
-    }	
-	#ifdef ENABLED_DOUBLE_BUFFERING
-		fb_doubleBufSwap();
-	#endif	
-}
-
-void fb_write(char* picData, int picWidth, int picHeight)
-{
-	int coor_y=0;
-	int coor_x=0;
-	int targetHeight = (fbHeight<picHeight)?fbHeight:picHeight;	//if Screen과 파일 사이즈가 안맞으면
-	int targetWidth = (fbWidth<picWidth)?fbWidth:picWidth;		//if Screen과 파일 사이즈가 안맞으면
-	
-	for(coor_y = 0; coor_y < targetHeight; coor_y++) 
-	{
-		int bmpYOffset = coor_y*picWidth*4; ///Every 1Pixel requires 4Bytes.
-		int bmpXOffset = 0;
-		for (coor_x=0; coor_x < targetWidth; coor_x++)
-		{
-			//BMP: B-G-R로 인코딩 됨, FB: 0-R-G-B로 인코딩 됨.
-			pfbmap[coor_y*fbWidth+ (fbWidth-coor_x) + currentEmptyBufferPos] = 
-				((unsigned long)(picData[bmpYOffset+bmpXOffset+0])<<16) 	+
-				((unsigned long)(picData[bmpYOffset+bmpXOffset+1])<<8) 		+
-				((unsigned long)(picData[bmpYOffset+bmpXOffset+2]));
-			bmpXOffset+=4;	//4 Byte.
-		}
-    }	
-	#ifdef ENABLED_DOUBLE_BUFFERING
-		fb_doubleBufSwap();
-	#endif
-}
-
-
-
-void fb_close2(void)
-{
-	printf ("Memory UnMapped!\r\n");
-    munmap( pfbmap, PFBSIZE);
-	printf ("CloseFB\r\n");
-    close( fbfd1);
-}
-
-void fb_write_reverse2(char* picData, int picWidth, int picHeight, int posx, int posy)
+void picture_in_position(char* picData, int picWidth, int picHeight, int posx, int posy)//포지션에 따라 이미지 출력하는 함수수
 {
 	int coor_y=0;
 	int coor_x=0;
@@ -204,7 +123,7 @@ void fb_write_reverse2(char* picData, int picWidth, int picHeight, int posx, int
 				bmpXOffset+=4;	//4 Byte. 투명도 검출 0이면 업데이트 안함
 			}
 			else{
-			pfbmap[coor_y*fbWidth+posx+fbWidth*posy+ (coor_x) + currentEmptyBufferPos] = 
+			sbuffer[coor_y*fbWidth + posx + fbWidth*posy + (coor_x) + currentEmptyBufferPos] = 
 				((unsigned long)(picData[bmpYOffset+bmpXOffset+0])<<16) 	+
 				((unsigned long)(picData[bmpYOffset+bmpXOffset+1])<<8) 		+
 				((unsigned long)(picData[bmpYOffset+bmpXOffset+2]));
@@ -213,11 +132,24 @@ void fb_write_reverse2(char* picData, int picWidth, int picHeight, int posx, int
 		}
     }	
 	#ifdef ENABLED_DOUBLE_BUFFERING
+	
 		fb_doubleBufSwap();
 	#endif	
 }
 
-void fb_write2(char* picData, int picWidth, int picHeight)
+
+
+void update_screen()
+{
+	
+	memcpy(pfbmap,sbuffer,sizeof(sbuffer));
+	
+}
+
+
+
+
+void picture_in_position_rotation(char* picData, int picWidth, int picHeight, int posx, int posy, double rad)//포지션에 따라 이미지 출력하는 함수수
 {
 	int coor_y=0;
 	int coor_x=0;
@@ -231,16 +163,23 @@ void fb_write2(char* picData, int picWidth, int picHeight)
 		for (coor_x=0; coor_x < targetWidth; coor_x++)
 		{
 			//BMP: B-G-R로 인코딩 됨, FB: 0-R-G-B로 인코딩 됨.
-			
-			pfbmap[coor_y*fbWidth+ (fbWidth-coor_x) + currentEmptyBufferPos] = 
+			if(((unsigned long)(picData[bmpYOffset+bmpXOffset+3])) == 0)
+			{
+				bmpXOffset+=4;	//4 Byte. 투명도 검출 0이면 업데이트 안함
+			}
+			else{
+			pfbmap[coor_y*fbWidth + posx + fbWidth*posy + (coor_x) + currentEmptyBufferPos] = 
 				((unsigned long)(picData[bmpYOffset+bmpXOffset+0])<<16) 	+
 				((unsigned long)(picData[bmpYOffset+bmpXOffset+1])<<8) 		+
 				((unsigned long)(picData[bmpYOffset+bmpXOffset+2]));
-			bmpXOffset+=4;	//4 Byte.
+				bmpXOffset+=4;	//4 Byte.
+			}
 		}
     }	
 	#ifdef ENABLED_DOUBLE_BUFFERING
+	
 		fb_doubleBufSwap();
-	#endif
+	#endif	
 }
+
 

@@ -4,5 +4,6 @@
         "fcntl.h": "c",
         "ioctl.h": "c",
         "lodepng.h": "c"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }

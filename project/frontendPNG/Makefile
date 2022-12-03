@@ -1,18 +1,11 @@
-LIBRARY_DIR := libfbdev build
-APPS_DIR :=   jpgViewer jpgAnimation
+LIBRARY_DIR := libfbdev
 
-all: library apps
+
+all: library
 	
-apps: library $(APPS_DIR)
 
-$(APPS_DIR):
-	$(MAKE) -C $@
+library: $(LIBRARY_DIR)
+	arm-linux-gnueabi-gcc -o libfbdev/libfbdev.o -c libfbdev/libfbdev.c
+	arm-linux-gnueabi-ar rc libmylib.a libfbdev/libfbdev.o
 
-library: $(LIBRARY_DIR) libpng.a
-	arm-linux-gnueabi-ar rc libmylib.a lib/libpng.a
-
-$(LIBRARY_DIR):
-	$(MAKE) -C $@
-	arm-linux-gnueabi-ar rc libmylib.a $@/$@.o
-
-.PHONY: all $(LIBRARY_DIR) $(APPS_DIR) library apps
+.PHONY: all $(LIBRARY_DIR) library
