@@ -10,3 +10,5 @@
 
 
  arm-linux-gnueabi-gcc -o jpgtest jpgAmination_ex.c -l mylib -l jpeg -L. -L./libjpeg
+
+ arm-linux-gnueabi-gcc -o pngtest frontend.c lodepng/lodepng.c -l mylib -L.

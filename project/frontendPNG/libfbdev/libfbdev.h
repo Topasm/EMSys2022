@@ -39,6 +39,6 @@ void fb_close(void);
 void fb_clear(void);
 void picture_in_position_rotation(char* picData, int picWidth, int picHeight, int posx, int posy, double rad);
 void picture_in_position(char* picData, int picWidth, int picHeight, int posx, int posy);
-void update_screen();
+//void update_screen();
 void fb_doubleBufSwap(void);
 #endif

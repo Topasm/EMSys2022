@@ -1,6 +1,6 @@
 
 #include "libfbdev.h"
-static unsigned long sbuffer[(1280*600*sizeof(unsigned long)*2)];	//스크린 버퍼
+//static unsigned long sbuffer[(1280*600*sizeof(unsigned long)*2)];	//스크린 버퍼
 
 
 
@@ -123,7 +123,7 @@ void picture_in_position(char* picData, int picWidth, int picHeight, int posx, i
 				bmpXOffset+=4;	//4 Byte. 투명도 검출 0이면 업데이트 안함
 			}
 			else{
-			sbuffer[coor_y*fbWidth + posx + fbWidth*posy + (coor_x) + currentEmptyBufferPos] = 
+			pfbmap[coor_y*fbWidth + posx + fbWidth*posy + (coor_x) + currentEmptyBufferPos] = 
 				((unsigned long)(picData[bmpYOffset+bmpXOffset+0])<<16) 	+
 				((unsigned long)(picData[bmpYOffset+bmpXOffset+1])<<8) 		+
 				((unsigned long)(picData[bmpYOffset+bmpXOffset+2]));
@@ -139,12 +139,13 @@ void picture_in_position(char* picData, int picWidth, int picHeight, int posx, i
 
 
 
-void update_screen()
-{
+// void update_screen()
+// {
 	
-	memcpy(pfbmap,sbuffer,sizeof(sbuffer));
+// 	memcpy(pfbmap,sbuffer,sizeof(sbuffer));
 	
-}
+
+// }
 
 
 

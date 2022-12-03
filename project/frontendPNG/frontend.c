@@ -70,12 +70,11 @@ int main(int argc, char **argv)
 
 	while (1)
 	{
-		printf("123");
+		
 		update_background();
-		printf("456");
+		
 		update_mari(i+100,200);
-		printf("12443");
-		update_screen();
+	
 		
 		i++;
 		
