@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <string.h>
+#include <math.h>
 #include <unistd.h>     // for open/close
 #include <fcntl.h>      // for O_RDWR
 #include <sys/ioctl.h>  // for ioctl

@@ -3,8 +3,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <math.h>
 #include "libfbdev/libfbdev.h"
 #include "lodepng/lodepng.h"
+
 
 char *bg_data;
 char *mari_data;
@@ -36,9 +38,9 @@ void update_background(void)
 	picture_in_position(bg_data, cols_bg, rows_bg,0,0);
 }
 
-void update_mari(int posx, int posy)
+void update_mari(int posx, int posy, double rad)
 {
-	picture_in_position(mari_data, cols_mari, rows_mari,posx,posy);
+	picture_in_position_rotation(mari_data, cols_mari, rows_mari,posx,posy,rad);
 }
 void update_maru(int posx, int posy)
 {
@@ -67,16 +69,16 @@ int main(int argc, char **argv)
 	printf("fb");
 	png_init();
 	printf("png init");
-	int i = 0;
+	float i = 0;
 	
 
 	while (1)
 	{
 		
-		update_background();
-		
-		update_mari(i+100,200);
-		update_screen();
+		// update_background();
+		printf("%f\n",sinf( i)*100);
+		// update_mari(i+100,200,i/100);
+		// update_screen();
 	
 		
 		i++;

@@ -1,9 +1,9 @@
 
 #include "libfbdev.h"
+
 static unsigned long sbuffer[1280*800];	//스크린 버퍼
 
-
-
+#define pi 3.141592653589793238462643383279
 
 
 int fb_init(int * screen_width, int * screen_height, int * bits_per_pixel, int * line_length)
@@ -153,22 +153,57 @@ void picture_in_position_rotation(char* picData, int picWidth, int picHeight, in
 {
 	int coor_y=0;
 	int coor_x=0;
+	int r,g,b;
 	int targetHeight = (fbHeight<picHeight)?fbHeight:picHeight;	//if Screen과 파일 사이즈가 안맞으면
 	int targetWidth = (fbWidth<picWidth)?fbWidth:picWidth;		//if Screen과 파일 사이즈가 안맞으면
+    double xcenter = (double)targetWidth/2.0, ycenter = (double)targetHeight/2.0; // (2)
+	int rot_x; int rot_y;
+	double cc = rad, ss = -rad;
 	
+
 	for(coor_y = 0; coor_y < targetHeight; coor_y++) 
 	{
 		int bmpYOffset = coor_y*picWidth*4; ///Every 1Pixel requires 4Bytes.
 		int bmpXOffset = 0;
+		int bmpYOffset1 = coor_y*picWidth*4; ///Every 1Pixel requires 4Bytes.
+		int bmpXOffset1 = 0;
+		int rotYOffset = rot_y*picWidth*4; ///Every 1Pixel requires 4Bytes.
+		int rotXOffset = 0;
 		for (coor_x=0; coor_x < targetWidth; coor_x++)
 		{
+			rot_x = (int)(xcenter + ((double)coor_y - ycenter)*cc + ((double)coor_x - xcenter)*ss);
+			rot_y = (int)(ycenter + ((double)coor_y - ycenter)*cc - ((double)coor_x - xcenter)*ss);
 			//BMP: B-G-R로 인코딩 됨, FB: 0-R-G-B로 인코딩 됨.
+			if ((rot_y >= 0 && rot_y < targetHeight) && (rot_x >= 0 && rot_x < targetWidth)) // 밖으로 벗어나면 안됨
+			{
+				r = picData[(int)(rotXOffset+rot_x+rotYOffset+0)]; // (5)
+				g = picData[(int)(rotXOffset+rot_x+rotYOffset+1)];
+				b = picData[(int)(rotXOffset+rot_x+rotYOffset+2)];
+			}
+			else{
+				r = 0;
+				g = 0;
+				b = 0;
+			}
+			picData[bmpYOffset1+bmpXOffset1+0] = r;
+			picData[bmpYOffset1+bmpXOffset1+1] = g; 
+			picData[bmpYOffset1+bmpXOffset1+2] = b;
+			rotXOffset += 4;
+			bmpXOffset1 += 4;
+
+		}
+
+		for (coor_x=0; coor_x < targetWidth; coor_x++)
+		{
+			
+			
+
 			if(((unsigned long)(picData[bmpYOffset+bmpXOffset+3])) == 0)
 			{
 				bmpXOffset+=4;	//4 Byte. 투명도 검출 0이면 업데이트 안함
 			}
 			else{
-			pfbmap[coor_y*fbWidth + posx + fbWidth*posy + (coor_x) + currentEmptyBufferPos] = 
+			sbuffer[coor_y*fbWidth + posx + fbWidth*posy + (coor_x) + currentEmptyBufferPos] = 
 				((unsigned long)(picData[bmpYOffset+bmpXOffset+0])<<16) 	+
 				((unsigned long)(picData[bmpYOffset+bmpXOffset+1])<<8) 		+
 				((unsigned long)(picData[bmpYOffset+bmpXOffset+2]));
@@ -181,5 +216,3 @@ void picture_in_position_rotation(char* picData, int picWidth, int picHeight, in
 		fb_doubleBufSwap();
 	#endif	
 }
-
-
