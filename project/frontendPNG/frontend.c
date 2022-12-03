@@ -13,7 +13,7 @@ char *mari_data;
 char *maru_data;
 unsigned int error;
 const char *bg_path = "./source/background.png";
-const char *mari_path = "./source/mari.png";
+const char *mari_path = "./source/ball.png";
 const char *maru_path = "./source/mari.png"; //maru 로 변경 해야 함
 int cols_bg = 0, rows_bg = 0;
 int cols_mari = 0, rows_mari = 0;
@@ -38,9 +38,9 @@ void update_background(void)
 	picture_in_position(bg_data, cols_bg, rows_bg,0,0);
 }
 
-void update_mari(int posx, int posy, double rad)
+void update_mari(int posx, int posy)
 {
-	picture_in_position_rotation(mari_data, cols_mari, rows_mari,posx,posy,rad);
+	picture_in_position(mari_data, cols_mari, rows_mari,posx,posy);
 }
 void update_maru(int posx, int posy)
 {
@@ -75,10 +75,9 @@ int main(int argc, char **argv)
 	while (1)
 	{
 		
-		// update_background();
-		printf("%f\n",sinf( i)*100);
-		// update_mari(i+100,200,i/100);
-		// update_screen();
+		update_background();
+		update_mari(100,200);
+		update_screen();
 	
 		
 		i++;
