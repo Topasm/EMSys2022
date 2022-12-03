@@ -12,7 +12,6 @@ int dispaly_menu(void)
 {	
 	while (1)
 	{
-		
 		update_menu();
 		update_screen();
 	}

@@ -16,7 +16,7 @@ unsigned int error;
 const char *bg_path = "./source/background.png";
 const char *mari_path = "./source/mari.png";
 const char *maru_path = "./source/mari.png"; //maru 로 변경 해야 함
-const char *menu_path = "./source/player.png";
+const char *menu_path = "./source/menu.png";
 
 int cols_bg = 0, rows_bg = 0;
 int cols_mari = 0, rows_mari = 0;
