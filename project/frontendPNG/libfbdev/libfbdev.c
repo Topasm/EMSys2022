@@ -4,6 +4,8 @@
 
 
 
+
+
 int fb_init(int * screen_width, int * screen_height, int * bits_per_pixel, int * line_length)
 {
 	
