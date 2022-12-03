@@ -1,6 +1,6 @@
 
 #include "libfbdev.h"
-//static unsigned long sbuffer[(1280*600*sizeof(unsigned long)*2)];	//스크린 버퍼
+static unsigned long sbuffer[1280*800];	//스크린 버퍼
 
 
 
@@ -48,7 +48,6 @@ int fb_init(int * screen_width, int * screen_height, int * bits_per_pixel, int *
         mmap(0, PFBSIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fbfd0, 0);
 
 	
-	
 	if ((unsigned)pfbmap == (unsigned)-1)
     {
         printf("fbdev mmap failed\n");
@@ -77,6 +76,7 @@ void fb_clear(void)
             *ptr++  =   0x000000;
         }
     }
+	
 	#ifdef ENABLED_DOUBLE_BUFFERING
 		fb_doubleBufSwap();
 	#endif
@@ -125,7 +125,7 @@ void picture_in_position(char* picData, int picWidth, int picHeight, int posx, i
 				bmpXOffset+=4;	//4 Byte. 투명도 검출 0이면 업데이트 안함
 			}
 			else{
-			pfbmap[coor_y*fbWidth + posx + fbWidth*posy + (coor_x) + currentEmptyBufferPos] = 
+			sbuffer[coor_y*fbWidth + posx + fbWidth*posy + (coor_x) + currentEmptyBufferPos] = 
 				((unsigned long)(picData[bmpYOffset+bmpXOffset+0])<<16) 	+
 				((unsigned long)(picData[bmpYOffset+bmpXOffset+1])<<8) 		+
 				((unsigned long)(picData[bmpYOffset+bmpXOffset+2]));
@@ -141,13 +141,10 @@ void picture_in_position(char* picData, int picWidth, int picHeight, int posx, i
 
 
 
-// void update_screen()
-// {
-	
-// 	memcpy(pfbmap,sbuffer,sizeof(sbuffer));
-	
-
-// }
+void update_screen(void)
+{
+	memcpy(pfbmap,sbuffer,sizeof(sbuffer));
+}
 
 
 

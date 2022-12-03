@@ -64,7 +64,9 @@ int main(int argc, char **argv)
 	}
 	/*clear FB.*/
 	fb_clear();
+	printf("fb");
 	png_init();
+	printf("png init");
 	int i = 0;
 	
 
@@ -74,6 +76,7 @@ int main(int argc, char **argv)
 		update_background();
 		
 		update_mari(i+100,200);
+		update_screen();
 	
 		
 		i++;
