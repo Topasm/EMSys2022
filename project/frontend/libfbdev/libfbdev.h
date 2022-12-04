@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <string.h>
+#include <math.h>
 #include <unistd.h>     // for open/close
 #include <fcntl.h>      // for O_RDWR
 #include <sys/ioctl.h>  // for ioctl
@@ -37,7 +38,6 @@ static int currentEmptyBufferPos = 0;
 int fb_init(int * screen_width, int * screen_height, int * bits_per_pixel, int * line_length);
 void fb_close(void);
 void fb_clear(void);
-void picture_in_position_rotation(char* picData, int picWidth, int picHeight, int posx, int posy, double rad);
 void picture_in_position(char* picData, int picWidth, int picHeight, int posx, int posy);
 void update_screen(void);
 void fb_doubleBufSwap(void);

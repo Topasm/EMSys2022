@@ -1,9 +1,9 @@
 
 #include "libfbdev.h"
+
 static unsigned long sbuffer[1280*800];	//스크린 버퍼
 
-
-
+#define pi 3.141592653589793238462643383279
 
 
 int fb_init(int * screen_width, int * screen_height, int * bits_per_pixel, int * line_length)
@@ -144,42 +144,6 @@ void picture_in_position(char* picData, int picWidth, int picHeight, int posx, i
 void update_screen(void)
 {
 	memcpy(pfbmap,sbuffer,sizeof(sbuffer));
-}
-
-
-
-
-void picture_in_position_rotation(char* picData, int picWidth, int picHeight, int posx, int posy, double rad)//포지션에 따라 이미지 출력하는 함수수
-{
-	int coor_y=0;
-	int coor_x=0;
-	int targetHeight = (fbHeight<picHeight)?fbHeight:picHeight;	//if Screen과 파일 사이즈가 안맞으면
-	int targetWidth = (fbWidth<picWidth)?fbWidth:picWidth;		//if Screen과 파일 사이즈가 안맞으면
-	
-	for(coor_y = 0; coor_y < targetHeight; coor_y++) 
-	{
-		int bmpYOffset = coor_y*picWidth*4; ///Every 1Pixel requires 4Bytes.
-		int bmpXOffset = 0;
-		for (coor_x=0; coor_x < targetWidth; coor_x++)
-		{
-			//BMP: B-G-R로 인코딩 됨, FB: 0-R-G-B로 인코딩 됨.
-			if(((unsigned long)(picData[bmpYOffset+bmpXOffset+3])) == 0)
-			{
-				bmpXOffset+=4;	//4 Byte. 투명도 검출 0이면 업데이트 안함
-			}
-			else{
-			pfbmap[coor_y*fbWidth + posx + fbWidth*posy + (coor_x) + currentEmptyBufferPos] = 
-				((unsigned long)(picData[bmpYOffset+bmpXOffset+0])<<16) 	+
-				((unsigned long)(picData[bmpYOffset+bmpXOffset+1])<<8) 		+
-				((unsigned long)(picData[bmpYOffset+bmpXOffset+2]));
-				bmpXOffset+=4;	//4 Byte.
-			}
-		}
-    }	
-	#ifdef ENABLED_DOUBLE_BUFFERING
-	
-		fb_doubleBufSwap();
-	#endif	
 }
 
 
