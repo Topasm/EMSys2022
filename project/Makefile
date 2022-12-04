@@ -1,15 +1,13 @@
 CC=arm-linux-gnueabi-gcc
-
-all:
-	$(CC) jpgAnimation.c -o jpgAnimation -L../ -L../libjpeg -lpthread -l mylib -l jpeg
-
-
-
+AR=arm-linux-gnueabi-ar
 LIBRARY_DIR := libfbdev
 
 
-all: library
-	
+all: mju_baegu.out
+
+
+mju_baegu.out: library
+	$(CC) -o mju_baegu.out main.c -lpthread -l mylib
 
 library: $(LIBRARY_DIR)
 	arm-linux-gnueabi-gcc -o libfbdev/libfbdev.o -c libfbdev/libfbdev.c -l m -mfloat-abi=hard
