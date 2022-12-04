@@ -13,12 +13,12 @@
 #define max(a,b) ((a < b)? (b) : (a))
 
 
-//2Â÷¿ø º¤ÅÍ ÀÚ·áÇü ±¸Çö
+//2ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 typedef struct Vector2 {
 	float x, y;
 }Vector2;
 
-//»ç°¢Çü ÀÚ·áÇü ±¸Çö
+//ï¿½ç°¢ï¿½ï¿½ ï¿½Ú·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 typedef struct Rectangle {
 	float x;
 	float y;
@@ -26,29 +26,15 @@ typedef struct Rectangle {
 	float height;
 } Rectangle;
 
-/*2Â÷¿ø ÁÂÇ¥ ÀÌµ¿ Çà·Ä
+/*2ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½
 [rot tans]
 [ 0    1 ]*/
 
 typedef struct Transform {
 	Vector2 position;
-	float rotation;
-	struct {
-		bool valid;
-		float sinA;
-		float cosA;
-	} cache;
 } Transform;
 
 inline float DotProduct(Vector2 v1, Vector2 v2) {
 	return (v1.x * v2.x) + (v1.y * v2.y);
 }
 
-
-/* Rotates `v` around the origin. */
-inline Vector2 Vec2Rotate(Vector2 v, float angle) {
-	const float sinA = sinf(angle);
-	const float cosA = cosf(angle);
-
-	return (Vector2) { (v.x * cosA - v.y * sinA), (v.x * sinA + v.y * cosA) };
-}
