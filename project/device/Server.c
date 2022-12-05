@@ -26,7 +26,6 @@ if (setsockopt (server_file_desc, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opti
 perror ("Setting Socket Failed.");
 exit(EXIT_FAILURE);
 }
-
 socket_Address.sin_family = AF_INET;
 socket_Address.sin_addr.s_addr = INADDR_ANY;
 socket_Address.sin_port = htons (PORT);
@@ -45,12 +44,20 @@ if ((new_socket = accept(server_file_desc, (struct sockaddr*)&socket_Address, (s
 perror ("Connect is not Accepted.");
 exit(EXIT_FAILURE);
 }
+
+
 //Reading the Message sent from Server
 value_Read = read(new_socket, buffer, 1024);
 printf ("Message from Client: %s \n", buffer); 
+
+
+// int i = 0;
+
+// for(i=0;i < 10; i++){
+while(1){
 send (new_socket, message, strlen(message), 0); 
 printf ("Message from Server is Sent to client\n");
-// closing the connected socket
+}// closing the connected socket
 close(new_socket);
 // closing the listening socket
 shutdown (server_file_desc, SHUT_RDWR);
