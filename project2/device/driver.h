@@ -1,4 +1,4 @@
-#include "./device/libs/button.h"
-#include "./device/libs/led.h"
+#include "libs/button.h"
+#include "libs/led.h"
 
 int LEDbyNum();

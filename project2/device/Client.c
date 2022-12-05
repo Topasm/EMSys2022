@@ -1,194 +1,98 @@
-#include <stdio.h> 
-#include <stdlib.h> 
-#include <string.h> 
-#include <unistd.h> 
-#include <arpa/inet.h> 
-#include <sys/socket.h> 
-#include <pthread.h> 
-#include <signal.h> 
-#define SERVER_PORT 50001 
-void *read_thread(void *arg); 
-void GetLEDStatus(int consocket); 
-void SendSetLED(int consocket, unsigned char ledctrValue); 
-int gThreadStop =0; 
-int main(int argc, char *argv[]) 
-{ 
- pthread_t pthreadread; // read thread 
- int socketClient; 
- 
- // check port info 
- if(argc != 2) { // server ip 
- printf("Usage: Client <server ip>\n"); 
- printf("ex)./Client 192.168.10.38\n"); 
- exit(1); 
- } 
- // argument ip format check 
- struct sockaddr_in serverAddr; 
- if (inet_pton(AF_INET,argv[1],&(serverAddr.sin_addr)) < 0)// wrong format 
- { // 문자열로부터 ip 값 가져옴. 
- printf(" IP format:%s is wrong.\n", argv[1]); 
- printf("Usage: Client <server ip>\n"); 
- printf("ex)./led_client 192.168.10.38\n"); 
- exit(1); 
- } 
-socketClient = socket(PF_INET, SOCK_STREAM, 0);// tcp => 0 소켓 생성 
- if (socketClient == -1) 
- { 
- printf("socket() error"); 
- return -1; 
- } 
- serverAddr.sin_family = AF_INET; 
- printf("Connecting IP : %s\n", inet_ntoa(serverAddr.sin_addr)); 
- serverAddr.sin_port = htons(SERVER_PORT); // port 입력 
- /* Set all bits of the padding field to 0 */ 
- memset(serverAddr.sin_zero, '\0' ,sizeof (serverAddr.sin_zero)); 
- // 서버에 연결 요청 
- if(connect(socketClient, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) 
- { 
- printf("connect() error\n"); 
- close(socketClient); 
- return 0; 
- } 
- else 
- { 
- printf("connect() success \n"); 
- } 
-// create read waiting thread 
- if(pthread_create(&pthreadread, NULL, read_thread, &socketClient) == -1) 
- { 
- printf("read_thread() error\n"); 
- return -1; 
- } 
-int setValue; 
- char inputCmd; 
- int scanRelt; 
- // main thread loop 
- while(!gThreadStop) 
- { printf("\neXit:x, Setled:s, Getled:g select menu:"); 
- scanRelt = scanf("%c",&inputCmd); 
- printf("\nscanRelt:%d, inputCmd:%c\n",scanRelt,inputCmd); 
- while (getchar() != '\n'); 
- switch(inputCmd) 
- { 
- case 's': 
- printf("\ninput the Led Set value(hexvalue):"); 
- scanRelt = scanf("%x", &setValue); 
- while (getchar() != '\n'); 
- SendSetLED(socketClient,(unsigned char)setValue); 
- printf("\nSetValue:0x%02X\n",setValue); 
- break; 
- case 'g': 
- GetLEDStatus(socketClient); 
- usleep(200000); 
- break; 
- case 'x': 
- close(socketClient); 
- gThreadStop = 1; 
-printf("bye ~~\n"); 
- return 0; 
- default: 
- printf("wrong menu input:%c\n",inputCmd); 
- continue; 
- } 
- } 
- 
- return 0; 
-} 
-#define RX_DATA_MAX 2048 
-/************************************************************ 
- msg => 3 byte 
- msg[0] => 0xFE header 
- msg[1] => command 
- msg[2] => data 
-************************************************************/ 
-#define PKT_INDEX_HEADER 0 
-#define PKT_INDEX_CMD 1 
-#define PKT_INDEX_DATA 2 
-#define PKT_LEN 3 
-#define PKT_HEADER_VALUE 0xFE 
-#define PKT_CMD_SET_LED 0x10 
-#define PKT_CMD_GET_LED 0x11 
-#define PKT_CMD_GET_LED_RES 0x91 
-void *read_thread(void *arg) 
-{ 
- int socketClient = *(int*)arg; 
- 
- unsigned char rcv_buf[RX_DATA_MAX]; 
- int readBufSize; 
- 
- pthread_detach(pthread_self()); 
- while(!gThreadStop) 
- { 
- readBufSize = read(socketClient, rcv_buf, RX_DATA_MAX); 
- if(readBufSize > 0) 
- { 
- if ( readBufSize < PKT_LEN ) 
- { 
- printf("packet is short:%d\n",readBufSize); 
- continue; 
- } 
- printf("[%02X][%02X][%02X]\n",rcv_buf[0],rcv_buf[1],rcv_buf[2]); 
- if ( (readBufSize != PKT_LEN) || (rcv_buf[PKT_INDEX_HEADER] != 
-PKT_HEADER_VALUE)) 
- { 
- continue; 
- } 
- // success 
- if (rcv_buf[PKT_INDEX_CMD] == PKT_CMD_GET_LED_RES ) 
- { 
- printf("LED status:0x%02X\n", rcv_buf[PKT_INDEX_DATA]);
- } 
- } 
- else if (readBufSize == 0) 
- { 
- printf("readBufSize : 0\n"); 
- } 
- else // readBufSize < 0 
- { 
- printf("client(%d) read error.\n", socketClient); 
- break; 
- } 
- } 
- printf("close clnt_sock.:%d\n",socketClient); 
- close(socketClient); 
- 
- return 0; 
-} 
-void SendSetLED(int consocket, unsigned char ledctrValue) 
-{ 
- unsigned char tx_buf[PKT_LEN]; 
- int writeBufSize; 
- tx_buf[PKT_INDEX_HEADER] = PKT_HEADER_VALUE; 
- tx_buf[PKT_INDEX_CMD] = PKT_CMD_SET_LED; 
- tx_buf[PKT_INDEX_DATA] = ledctrValue ; 
- writeBufSize = write(consocket, tx_buf , PKT_LEN); 
- if(writeBufSize < 0) 
- { 
- printf("Network error\n"); 
- close(consocket); 
- gThreadStop = 1; 
- } 
- else if ( writeBufSize != PKT_LEN) 
- { 
- printf("Write error\n"); 
- } 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <fcntl.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <sys/time.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <time.h>
+
+
+#define MAXLINE     1000
+#define NAME_LEN    20
+
+char *EXIT_STRING = "exit";
+// 소켓 생성 및 서버 연결, 생성된 소켓리턴
+int tcp_connect(int af, char *servip, unsigned short port);
+void errquit(char *mesg) { perror(mesg); exit(1); }
+
+int main(int argc, char *argv[]) {
+	char bufname[NAME_LEN];	// 이름
+	char bufmsg[MAXLINE];	// 메시지부분
+	char bufall[MAXLINE + NAME_LEN];
+	int maxfdp1;	// 최대 소켓 디스크립터
+	int s;		// 소켓
+	int namelen;	// 이름의 길이
+	fd_set read_fds;
+	time_t ct;
+	struct tm tm;
+
+	if (argc != 4) {
+		printf("사용법 : %s sever_ip  port name \n", argv[0]);
+		exit(0);
+	}
+
+	s = tcp_connect(AF_INET, argv[1], atoi(argv[2]));
+	if (s == -1)
+		errquit("tcp_connect fail");
+
+	puts("서버에 접속되었습니다.");
+	maxfdp1 = s + 1;
+	FD_ZERO(&read_fds);
+
+	while (1) {
+		FD_SET(0, &read_fds);
+		FD_SET(s, &read_fds);
+		if (select(maxfdp1, &read_fds, NULL, NULL, NULL) < 0)
+			errquit("select fail");
+		if (FD_ISSET(s, &read_fds)) {
+			int nbyte;
+			if ((nbyte = recv(s, bufmsg, MAXLINE, 0)) > 0) {
+				bufmsg[nbyte] = 0;
+				write(1, "\033[0G", 4);		//커서의 X좌표를 0으로 이동
+				printf("%s", bufmsg);		//메시지 출력
+				fprintf(stderr, "\033[1;32m");	//글자색을 녹색으로 변경
+				fprintf(stderr, "%s>", argv[3]);//내 닉네임 출력
+
+			}
+		}
+		if (FD_ISSET(0, &read_fds)) {
+			if (fgets(bufmsg, MAXLINE, stdin)) {
+				fprintf(stderr, "\033[1;33m"); //글자색을 노란색으로 변경
+				fprintf(stderr, "\033[1A"); //Y좌표를 현재 위치로부터 -1만큼 이동
+				ct = time(NULL);	//현재 시간을 받아옴
+				tm = *localtime(&ct);
+				sprintf(bufall, "[%02d:%02d:%02d]%s>%s", tm.tm_hour, tm.tm_min, tm.tm_sec, argv[3], bufmsg);//메시지에 현재시간 추가
+				if (send(s, bufall, strlen(bufall), 0) < 0)
+					puts("Error : Write error on socket.");
+				if (strstr(bufmsg, EXIT_STRING) != NULL) {
+					puts("Good bye.");
+					close(s);
+					exit(0);
+				}
+			}
+		}
+	} // end of while
 }
-void GetLEDStatus(int consocket) 
-{ 
- unsigned char tx_buf[PKT_LEN]; 
- int writeBufSize; 
- tx_buf[PKT_INDEX_HEADER] = PKT_HEADER_VALUE; 
- tx_buf[PKT_INDEX_CMD] = PKT_CMD_GET_LED; 
- tx_buf[PKT_INDEX_DATA] = 0 ; 
- writeBufSize = write(consocket, tx_buf , PKT_LEN); 
- if(writeBufSize < 0) 
- { 
- printf("Network error\n"); 
- close(consocket); 
- gThreadStop = 1; 
- } 
- else if ( writeBufSize != PKT_LEN) 
- { 
- printf("Write error\n"); 
- } 
-} 
+
+int tcp_connect(int af, char *servip, unsigned short port) {
+	struct sockaddr_in servaddr;
+	int  s;
+	// 소켓 생성
+	if ((s = socket(af, SOCK_STREAM, 0)) < 0)
+		return -1;
+	// 채팅 서버의 소켓주소 구조체 servaddr 초기화
+	bzero((char *)&servaddr, sizeof(servaddr));
+	servaddr.sin_family = af;
+	inet_pton(AF_INET, servip, &servaddr.sin_addr);
+	servaddr.sin_port = htons(port);
+
+	// 연결요청
+	if (connect(s, (struct sockaddr *)&servaddr, sizeof(servaddr))
+		< 0)
+		return -1;
+	return s;
+}
