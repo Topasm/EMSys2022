@@ -10,9 +10,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "driver.h"
-#include "move_left.h"
-#include "menu.h"
+#include "device/driver.h"
+#include "frontend/display/move_left.h"
+#include "frontend/display/menu.h"
 
 int main(int argc, char **argv)
 {

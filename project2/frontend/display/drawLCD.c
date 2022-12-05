@@ -3,9 +3,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
-#include "libfbdev/libfbdev.h"
-#include "lodepng/lodepng.h"
-#include "../device/gyro.h"
+#include "drawLCD.h"
+#include "../lodepng/lodepng.h"
 
 char *bg_data;
 char *mari_data;

@@ -6,9 +6,9 @@ void png_init();
 void update_background(void);
 void update_mari(int posx, int posy);
 void update_maru(int posx, int posy);
-void update_menu(void);
-
-
+//void update_menu(void);
+void update_game_start(void);
+void update_player(void);
 
 
 

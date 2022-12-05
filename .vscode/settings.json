@@ -4,7 +4,11 @@
         "fcntl.h": "c",
         "ioctl.h": "c",
         "lodepng.h": "c",
+<<<<<<< HEAD
+        "gyro.h": "c"
+=======
         "pthread.h": "c"
+>>>>>>> 928b437d1bdad796db80cb95a2dbd928e5475f9b
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

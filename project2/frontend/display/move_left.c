@@ -3,10 +3,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
-#include "frontend/libfbdev/libfbdev.h"
-#include "frontend/lodepng/lodepng.h"
-#include "device/gyro.h"
-#include "frontend/frontend.h"
+#include "../libfbdev/libfbdev.h"
+#include "../lodepng/lodepng.h"
+#include "../../device/libs/gyro.h"
+#include "drawLCD.h"
 
 
 //int x=100; 
@@ -41,41 +41,43 @@ void update_maru(int posx, int posy)
 } */
 
 
+
+
 int move_left(void)
 {	
-	int x1=0, x2=400;
-	int dx1=0, dx2=0;
+	int x=0;
+	int dx=0;
 	while (1)
 	{
 		
 		update_background();
-		update_mari(x1,200);
+		update_mari(x,200);
 		update_screen();
 
-		if(x1>=240)	
+		if(x>=240)	
 		{
 			printf("saturation\n");
-			dx1=get_dx();
-			if(dx1>0)
-				x1=x1-dx1;
+			dx=get_dx();
+			if(dx>0)
+				x=x-dx;
 			else
-				x1=295;
+				x=295;
 		}		
-		else if(x1<=0)
+		else if(x<=0)
 		{
 			printf("saturation\n");
-			dx1=get_dx();
-			if(dx1<0)
-				x1=x1-dx1;
+			dx=get_dx();
+			if(dx<0)
+				x=x-dx;
 			else
-				x1=0;
+				x=0;
 		}
 		else
 		{
-			printf("%d\n",x1);
-			dx1=get_dx();
-			x1=x1-dx1;
-			printf("%d, %d\n",x1,dx1);
+			printf("%d\n",x);
+			dx=get_dx();
+			x=x-dx;
+			printf("%d, %d\n",x,dx);
 		}
 	}
 	fb_close();
