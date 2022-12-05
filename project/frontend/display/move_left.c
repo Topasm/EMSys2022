@@ -3,10 +3,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
-#include "frontend/libfbdev/libfbdev.h"
-#include "frontend/lodepng/lodepng.h"
-#include "device/gyro.h"
-#include "frontend/frontend.h"
+#include "../libfbdev/libfbdev.h"
+#include "../lodepng/lodepng.h"
+#include "../../device/gyro.h"
+#include "drawLCD.h"
 
 
 //int x=100; 

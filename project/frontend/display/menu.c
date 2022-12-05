@@ -3,10 +3,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
-#include "frontend/libfbdev/libfbdev.h"
-#include "frontend/lodepng/lodepng.h"
-#include "device/gyro.h"
-#include "frontend/frontend.h"
+#include "drawLCD.h"
+#include "../lodepng/lodepng.h"
+
 
 int dispaly_menu(void)
 {	
