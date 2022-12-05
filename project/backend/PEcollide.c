@@ -19,11 +19,17 @@ int CheckCollisionAnB(object* a, object* b)
 int CheckImpulseAnB(object* a, object* b)
 {
     PEVector2 bvel = b->vel;
-    
-    a->vel.x = mul((a->inv_mass/b->inv_mass), bvel).x;
-    a->vel.y = mul((a->inv_mass/b->inv_mass), bvel).y;
-    b->vel.x = mul((b->inv_mass/a->inv_mass), a->vel).x;
-    b->vel.y = mul((b->inv_mass/a->inv_mass), a->vel).y;
+    PEVector2 avel = a->vel;
+    float mass1 = 1;
+    float mass2 = 0.01;
+    a->vel.x = -mass1*avel.x;
+    a->vel.y = -mass1*avel.y;
+    b->vel.x = -mass2*bvel.x;
+    b->vel.y = -mass2*bvel.y;
+
+    printf("objec collide\n");
     
 }
+
+
 //충돌 방향마다 검출하기

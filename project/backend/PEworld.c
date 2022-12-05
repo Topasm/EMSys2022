@@ -14,16 +14,16 @@ float calculatePose(object *mass, float gravity)
     return mass->pos.y;
 }
 
-inline PEVector2 mul(float a, PEVector2 v)
-{
-    return (PEVector2) { v.x * a, v.y * a };
-}
 
-void ContactGround(object *a)
+void ContactGround(object *a, float elastic)
 {
-    if(a->pos.y>400)
+    if(a->pos.y>400 && a->vel.y>0)
     {
-        a->vel.y*=-0.8;
+        if(a->vel.y<1)
+        {
+            a->vel.y+=2;
+        }
+        a->vel.y*=-elastic;
         printf("contact%d", a->pos.x);
 
     }
