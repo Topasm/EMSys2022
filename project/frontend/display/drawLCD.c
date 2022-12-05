@@ -7,9 +7,9 @@
 #include <sys/ioctl.h>	//for ioctl
 #include <pthread.h>
 #include "drawLCD.h"
-#include "../lodepng/lodepng.h"
-#include "../device/gyro.h"
-#include "../device/libs/button.h"
+//#include "../lodepng/lodepng.h"
+#include "../../device/libs/gyro.h"
+#include "../../device/libs/button.h"
 
 
 static pthread_t buttonTh_id;
