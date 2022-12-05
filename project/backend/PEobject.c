@@ -10,8 +10,9 @@ object* generate_ball(float x, float y)
     ball->pos.x = x;
     ball->pos.y = y;
     ball->inv_mass = 0.6;
-    ball->poly.count=4;
-    ball->poly.normals[0] = {0,1,1,0,0,-1,-1,0};
+    ball->size.x = 50;
+    ball->size.y = 50;
+    
     return (object*)ball;
 }
 
@@ -23,14 +24,9 @@ object* generate_character(float x, float y)
     character->pos.y = y;
    
     character->inv_mass = 0.1;
-    character->poly.count=4;
-
+    character->size.x = 150;
+    character->size.y = 200;
+    
     return (object*)character;
 }
 
-typedef struct Rectangle {
-	float x;
-	float y;
-	float width;
-	float height;
-} Rectangle;

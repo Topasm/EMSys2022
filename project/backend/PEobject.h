@@ -39,7 +39,7 @@ typedef struct
     PEVector2 Force; //힘 2방향
     float inv_mass;  // mass 인버스
     bool stable;     //안정성 유무
-    Polygon poly;
+    PEVector2 size; //크기
 } object;
 
 object *generate_ball(float x, float y);

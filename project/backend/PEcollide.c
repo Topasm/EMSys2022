@@ -3,11 +3,27 @@
 
 
 
-bool AabbAabbIntersection(Aabb a, Aabb b)
+int CheckCollisionAnB(object* a, object* b)
 {
-    if (a.max.x < b.min.x || a.min.x > b.max.x) return 0;
-    if (a.max.y < b.min.y || a.min.y > b.max.y) return 0;
-    if (a.max.z < b.min.z || a.min.z > b.max.z) return 0;
+    int ax_h = a->size.x/2;
+    int ay_h = a->size.y/2;
+    int bx_h = b->size.x/2;
+    int by_h = b->size.y/2;
+
+    if (a->pos.x+ax_h < b->pos.x - bx_h|| a->pos.x- ax_h > b->pos.x+ bx_h) return 0;
+    if (a->pos.y+ay_h < b->pos.y - by_h|| a->pos.y- ay_h > b->pos.y+ by_h) return 0;
     return 1;
+}
+
+
+int CheckImpulseAnB(object* a, object* b)
+{
+    PEVector2 bvel = b->vel;
+    
+    a->vel.x = mul((a->inv_mass/b->inv_mass), bvel).x;
+    a->vel.y = mul((a->inv_mass/b->inv_mass), bvel).y;
+    b->vel.x = mul((b->inv_mass/a->inv_mass), a->vel).x;
+    b->vel.y = mul((b->inv_mass/a->inv_mass), a->vel).y;
+    
 }
 //충돌 방향마다 검출하기

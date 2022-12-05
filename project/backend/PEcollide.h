@@ -1,1 +1,2 @@
-static Projection GetProjection(Polygon* poly, PEVector2 axis);
+int CheckCollisionAnB(object* a, object* b);
+int CheckImpulseAnB(object* a, object* b);

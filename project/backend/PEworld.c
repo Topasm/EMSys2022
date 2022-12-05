@@ -6,21 +6,27 @@
 
 #define STRUCT_ZERO(T) ((T){0})
 
-float calculateGravity(object *mass)
+float calculatePose(object *mass, float gravity)
 {
-    float gravity = 9.81;
-    float dropSpeed = 0.0;
-    dropSpeed += gravity;
-    mass->pos.y += dropSpeed;
+    mass->acc.y = gravity;
+    mass->vel.y += gravity;
+    mass->pos.y += mass->vel.y;
     return mass->pos.y;
 }
 
-// void Constraint()
-// {
-//     const Vector2 position = {212, 123};
-// }
+inline PEVector2 mul(float a, PEVector2 v)
+{
+    return (PEVector2) { v.x * a, v.y * a };
+}
 
+void ContactGround(object *a)
+{
+    if(a->pos.y>400)
+    {
+        a->vel.y*=-0.8;
+        printf("contact%d", a->pos.x);
 
-// void ContactGround();
+    }
+}
 
 // void ContactEdges();
