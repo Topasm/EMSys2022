@@ -5,7 +5,7 @@
 #include <pthread.h>
 #include "../libfbdev/libfbdev.h"
 #include "../lodepng/lodepng.h"
-#include "../../device/gyro.h"
+#include "../../device/libs/gyro.h"
 #include "drawLCD.h"
 
 
