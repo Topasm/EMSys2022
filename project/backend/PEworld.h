@@ -1,0 +1,1 @@
+float calculateGravity(object *mass);
