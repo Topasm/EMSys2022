@@ -12,8 +12,8 @@ struct sockaddr_in socket_Address;
 int option = 1;
 int address_Length = sizeof(socket_Address);
 char buffer [1024] = { 0 };
-char* message = "Greetings Message from Server!!!";
-
+// char* message = "Greetings Message from Server!!!"; //클라이언트로 보내는 거
+char* message = "서버에서 보내는 x, y좌표"; //클라이언트로 보내는 거
 // Creating socket file descriptor
 if ((server_file_desc = socket (AF_INET, SOCK_STREAM, 0)) == 0) 
 {
@@ -48,13 +48,15 @@ exit(EXIT_FAILURE);
 
 //Reading the Message sent from Server
 value_Read = read(new_socket, buffer, 1024);
-printf ("Message from Client: %s \n", buffer); 
+// printf ("Message from Client: %s \n", buffer); //버퍼에 클라이언트 메세지 쓰여있음
 
 
 // int i = 0;
 
 // for(i=0;i < 10; i++){
 while(1){
+printf ("Message from Client: %s \n", buffer); //버퍼에 클라이언트 메세지 쓰여있음
+
 send (new_socket, message, strlen(message), 0); 
 printf ("Message from Server is Sent to client\n");
 }// closing the connected socket

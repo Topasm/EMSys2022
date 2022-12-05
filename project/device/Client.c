@@ -9,7 +9,8 @@
 {
 int sock = 0, value_Read, client_file_descriptor;
 struct sockaddr_in server_address;
-char* message ="Hello, Message from Client, Please Response";
+// char* message ="Hello, Message from Client, Please Response"; //서버로 보내는 메세지  
+char* message ="클라이언트에서 보내는 x, y좌표"; //서버로 보내는 메세지  
 char buffer [1024] = { 0 };
 if ((sock = socket (AF_INET, SOCK_STREAM, 0)) < 0) {
 printf("In Error while creation of Socket \n");
