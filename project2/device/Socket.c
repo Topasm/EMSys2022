@@ -1,262 +1,197 @@
-#define _XOPEN_SOURCE 200    // 값에 따라 sigaction 정의가 달라집니다.
-#include <signal.h>      
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <fcntl.h>
+#include <sys/socket.h>
+#include <sys/file.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <time.h>
+#include <pthread.h>
 
-#include <stdio.h> 
-#include <stdlib.h> 
-#include <string.h> 
-#include <unistd.h> 
-#include <arpa/inet.h> 
-#include <sys/socket.h> 
-#include <pthread.h> 
-#include <signal.h> 
-#define LISTENING_PORT 50001 // Server 포트
-// thread 
-void *listening_thread(void *arg); 
-void *client_thread(void *arg); 
-void error_handling(char *message); 
-#define CMD_NONE 0 
-#define CMD_CONTROL 1 
-#define MAX_CLIENT_NUM 10 // 서버에 붙을 수 있는 최대 Client 수
-struct led_control // 현재 LED 정보 상태 
-{ 
-// bit 0 => first led, bit 2 => Second led , bit 7 => 7th led . set(1) => ON , 
-//reset(0) => OFF 
- int ledStatus; 
- int newCmdFlag; // 새로운 명령이 왔다는 표시
- pthread_mutex_t* mutex; 
-};
-struct server_info // 서버의 개인 정보 
-{ 
- struct led_control ledctl; 
- int threadStop; 
- int serverlistenSock; // listen 소켓
-}; 
-struct info_for_client //  연결된 Client의 정보 
-{ 
- struct server_info* pInfo; 
- int ownSockIndex; 
- int clientSock[MAX_CLIENT_NUM]; 
-}; 
-struct server_info gInfo; 
-struct info_for_client clientInfo; 
-void alarmLedControl(unsigned char data) 
-{ 
- char strCmd[80]; 
- int result; 
- sprintf(strCmd,"./ledtest  0x%02x",data); 
- result = system(strCmd); 
-} 
-void handle_kill_signal() { 
- gInfo.threadStop = 1; 
- if ( gInfo.serverlistenSock != -1) 
- close(gInfo.serverlistenSock); 
- signal(SIGINT, SIG_DFL); // SIG_DFL => do the default action of this signal 
- alarmLedControl(0x00); // all off 
-} 
-void init(struct server_info* data) 
-{ 
- alarmLedControl(0x00); // LED off 
- data->ledctl.ledStatus = 0x00; 
- data->ledctl.newCmdFlag = CMD_NONE; 
- data->threadStop = 0; 
- data->serverlistenSock = -1; 
- data->ledctl.mutex = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)); 
- pthread_mutex_init( data->ledctl.mutex , NULL ); // 뮤텍스 init 
-} 
-int main(int argc, char *argv[]) 
-{ 
- struct server_info* pInfo=&gInfo; 
- pthread_t pthreadListening; // accept client 
- struct sigaction action; 
- int *pThreadReturn; 
-init(pInfo); 
- // create listening thread 
- if(pthread_create(&pthreadListening, NULL, listening_thread, pInfo) == -1) 
- { 
- error_handling("pthread_create() error\n"); 
- return -1; 
- } 
- // Add signal handler to terminate server 
- action.sa_handler = handle_kill_signal; 
- sigemptyset(&action.sa_mask); 
- action.sa_flags = 0; 
- sigaction(SIGINT, &action, NULL); // ctrl+c 
- // main thread loop 
- while(!pInfo->threadStop) 
- { 
- if ( pInfo->ledctl.newCmdFlag == CMD_CONTROL )// 새로운 명령어가 들어오면 
- { // 명령 수행 
- pInfo->ledctl.newCmdFlag = CMD_NONE; 
- alarmLedControl(pInfo->ledctl.ledStatus); 
- } 
- usleep(100000); // 100mS에 한번씩 체크 
- } 
- printf("LED control server closed.\n"); 
-return 0; 
-} 
-//control Client acception manage 
-void *listening_thread(void *arg) 
-{ 
- pthread_detach(pthread_self()); // 이 스레드를 독립적으로 자원해제(스레드 종료시) 
- struct server_info* pInfo = (struct server_info*)arg; // 스레드 생성시 넘긴 데이터 
- int serv_sock, clnt_sock; 
- struct sockaddr_in serv_adr, clnt_adr; 
- socklen_t clnt_adr_sz; 
- 
- pthread_t pthreadClient; // threadd receive data 
- struct info_for_client* pclientInfo = &clientInfo; 
- int i; 
-pclientInfo->pInfo = pInfo; 
- for(i = 0; i < MAX_CLIENT_NUM ; i++) 
- { 
- pclientInfo->clientSock[i] = -1; 
- } 
+#define MAXLINE  511
+#define MAX_SOCK 1024 // 솔라리스의 경우 64
 
-pclientInfo->ownSockIndex = 0; 
-// get server socket 
- serv_sock = socket(PF_INET, SOCK_STREAM, 0);// tcp => 0 
- if (serv_sock == -1) 
- error_handling("socket() error"); 
-//soket option - reuse binded address 
- int option = 1; 
- setsockopt(serv_sock, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)); 
- memset(&serv_adr, 0, sizeof(serv_adr)); 
- serv_adr.sin_family = AF_INET; 
- serv_adr.sin_addr.s_addr = htonl(INADDR_ANY); // get ip address 
- serv_adr.sin_port = htons(LISTENING_PORT); // get port num
- // bind . for the connection request of control board 
- if (bind(serv_sock, (struct sockaddr*)&serv_adr, sizeof(serv_adr)) == -1) 
- error_handling("bind() error"); 
-// listen 
- if (listen(serv_sock, 10) == -1) 
- error_handling("listen() error"); 
- 
- clnt_adr_sz = sizeof(clnt_adr); 
-while(!pInfo->threadStop) 
-{ 
- printf("ready to accept client...\n"); 
- // Client connection 요청시 수락 
- clnt_sock = accept(serv_sock, (struct sockaddr*)&clnt_adr, &clnt_adr_sz); 
+char *EXIT_STRING = "exit";	// 클라이언트의 종료요청 문자열
+char *START_STRING = "Connected to chat_server \n";
+// 클라이언트 환영 메시지
+int maxfdp1;				// 최대 소켓번호 +1
+int num_user = 0;			// 채팅 참가자 수
+int num_chat = 0;			// 지금까지 오간 대화의 수
+int clisock_list[MAX_SOCK];		// 채팅에 참가자 소켓번호 목록
+char ip_list[MAX_SOCK][20];		//접속한 ip목록
+int listen_sock;			// 서버의 리슨 소켓
 
-printf("clnt_sock : %d\n", clnt_sock); 
- if(clnt_sock < 0 ) 
- { 
- error_handling("accept() error"); 
- continue; 
- } 
- // 최대 client 수를 넘었는 지 확인 
- if (pclientInfo->ownSockIndex >= MAX_CLIENT_NUM ) 
- { 
- close(clnt_sock); 
- continue; 
- } 
- // Clients 정보 구조체 수락한 client socket 정보 저장 
- printf("accept() success \n"); 
- pclientInfo->clientSock[pclientInfo->ownSockIndex] = clnt_sock; 
- pclientInfo->ownSockIndex++; 
- 
- // accept and create object and create thread 
- if(pthread_create(&pthreadClient, NULL , client_thread , (void*)pclientInfo) == -1) 
- { 
- error_handling("acceptClient_thread -- pthread_create() error"); 
- close(clnt_sock); 
- } 
- 
- printf("Connected Client IP : %s\n", inet_ntoa(clnt_adr.sin_addr)); 
- printf("Client Port Num : %d\n\n", ntohs(clnt_adr.sin_port)); 
- } 
-close(serv_sock); 
- 
- for(i = 0; i < MAX_CLIENT_NUM ; i++) 
- { 
- if (pclientInfo->clientSock[i] != -1) // 종료 될 때 현재 연결된 Client socket close
-{ 
- close(pclientInfo->clientSock[i]); 
- pclientInfo->clientSock[i] = -1; 
- } 
- } 
- return 0; 
-} 
-#define RX_DATA_MAX 2048 
-/************************************************************ 
- msg => 3 byte 
- msg[0] => 0xFE header 
- msg[1] => command 
- msg[2] => data 
-************************************************************/ 
-#define PKT_INDEX_HEADER 0 
-#define PKT_INDEX_CMD 1 
-#define PKT_INDEX_DATA 2 
-#define PKT_LEN 3 
-#define PKT_HEADER_VALUE 0xFE 
-#define PKT_CMD_SET_LED 0x10 
-#define PKT_CMD_GET_LED 0x11 
-#define PKT_CMD_GET_LED_RES 0x91
-void *client_thread(void *arg) 
-{ 
- int clnt_sock; 
- struct info_for_client* pclientInfo = arg; 
- int clnt_sock_index = pclientInfo->ownSockIndex-1; 
- clnt_sock = pclientInfo->clientSock[clnt_sock_index]; 
- 
- char rcv_buf[RX_DATA_MAX]; 
- int readBufSize,writeBufSize; 
- 
- pthread_detach(pthread_self()); 
- while(!pclientInfo->pInfo->threadStop) 
- { 
- readBufSize = read(clnt_sock, rcv_buf, RX_DATA_MAX); 
- 
- if(readBufSize > 0) 
- { // 메시지 프로토콜 형식 확인 
- if ( (readBufSize != PKT_LEN) || (rcv_buf[PKT_INDEX_HEADER] != 
-PKT_HEADER_VALUE)) 
- { 
- continue; 
- } 
- // success 
- if (rcv_buf[PKT_INDEX_CMD] == PKT_CMD_SET_LED ) // LED set 명령 
- { 
- pclientInfo->pInfo->ledctl.ledStatus = rcv_buf[PKT_INDEX_DATA]; 
- pclientInfo->pInfo->ledctl.newCmdFlag = CMD_CONTROL; 
- } 
- else if (rcv_buf[PKT_INDEX_CMD] == PKT_CMD_GET_LED) // LED get 명령 
- { 
- // echo TX 
- rcv_buf[PKT_INDEX_CMD] = PKT_CMD_GET_LED_RES; 
- rcv_buf[PKT_INDEX_DATA] = pclientInfo->pInfo->ledctl.ledStatus ; 
- writeBufSize = write(clnt_sock, rcv_buf , PKT_LEN); 
- printf("Send data len: %d\n",writeBufSize); 
-if(writeBufSize < 0) 
- { 
- printf("echo write() error\n"); 
- break; 
- } 
- } 
- } 
- else if (readBufSize == 0) 
- { 
- printf("readBufSize : 0\n"); 
- break; 
- } 
- else // readBufSize < 0 
- { 
- printf("client(%d) write error.\n", clnt_sock); 
- break; 
- } 
- } 
- printf("close clnt_sock.:%d\n",clnt_sock); 
- close(clnt_sock); 
- pclientInfo->clientSock[clnt_sock_index] = -1; 
- 
- return 0; 
-} 
-void error_handling(char *message) 
-{ 
- fputs(message, stderr); 
- fputc('\n', stderr); 
-} 
+							// 새로운 채팅 참가자 처리
+void addClient(int s, struct sockaddr_in *newcliaddr);
+int getmax();				// 최대 소켓 번호 찾기
+void removeClient(int s);	// 채팅 탈퇴 처리 함수
+int tcp_listen(int host, int port, int backlog); // 소켓 생성 및 listen
+void errquit(char *mesg) { perror(mesg); exit(1); }
 
+time_t ct;
+struct tm tm;
 
+void *thread_function(void *arg) { //명령어를 처리할 스레드
+	int i;
+	printf("명령어 목록 : help, num_user, num_chat, ip_list\n");
+	while (1) {
+		char bufmsg[MAXLINE + 1];
+		fprintf(stderr, "\033[1;32m"); //글자색을 녹색으로 변경
+		printf("server>"); //커서 출력
+		fgets(bufmsg, MAXLINE, stdin); //명령어 입력
+		if (!strcmp(bufmsg, "\n")) continue;   //엔터 무시
+		else if (!strcmp(bufmsg, "help\n"))    //명령어 처리
+			printf("help, num_user, num_chat, ip_list\n");
+		else if (!strcmp(bufmsg, "num_user\n"))//명령어 처리
+			printf("현재 참가자 수 = %d\n", num_user);
+		else if (!strcmp(bufmsg, "num_chat\n"))//명령어 처리
+			printf("지금까지 오간 대화의 수 = %d\n", num_chat);
+		else if (!strcmp(bufmsg, "ip_list\n")) //명령어 처리
+			for (i = 0; i < num_user; i++)
+				printf("%s\n", ip_list[i]);
+		else //예외 처리
+			printf("해당 명령어가 없습니다.help를 참조하세요.\n");
+	}
+}
 
+int main(int argc, char *argv[]) {
+	struct sockaddr_in cliaddr;
+	char buf[MAXLINE + 1]; //클라이언트에서 받은 메시지
+	int i, j, nbyte, accp_sock, addrlen = sizeof(struct
+		sockaddr_in);
+	fd_set read_fds;	//읽기를 감지할 fd_set 구조체
+	pthread_t a_thread;
 
+	if (argc != 2) {
+		printf("사용법 :%s port\n", argv[0]);
+		exit(0);
+	}
+
+	// tcp_listen(host, port, backlog) 함수 호출
+	listen_sock = tcp_listen(INADDR_ANY, atoi(argv[1]), 5);
+	//스레드 생성
+	pthread_create(&a_thread, NULL, thread_function, (void *)NULL);
+	while (1) {
+		FD_ZERO(&read_fds);
+		FD_SET(listen_sock, &read_fds);
+		for (i = 0; i < num_user; i++)
+			FD_SET(clisock_list[i], &read_fds);
+
+		maxfdp1 = getmax() + 1;	// maxfdp1 재 계산
+		if (select(maxfdp1, &read_fds, NULL, NULL, NULL) < 0)
+			errquit("select fail");
+
+		if (FD_ISSET(listen_sock, &read_fds)) {
+			accp_sock = accept(listen_sock,
+				(struct sockaddr*)&cliaddr, &addrlen);
+			if (accp_sock == -1) errquit("accept fail");
+			addClient(accp_sock, &cliaddr);
+			send(accp_sock, START_STRING, strlen(START_STRING), 0);
+			ct = time(NULL);			//현재 시간을 받아옴
+			tm = *localtime(&ct);
+			write(1, "\033[0G", 4);		//커서의 X좌표를 0으로 이동
+			printf("[%02d:%02d:%02d]", tm.tm_hour, tm.tm_min, tm.tm_sec);
+			fprintf(stderr, "\033[33m");//글자색을 노란색으로 변경
+			printf("사용자 1명 추가. 현재 참가자 수 = %d\n", num_user);
+			fprintf(stderr, "\033[32m");//글자색을 녹색으로 변경
+			fprintf(stderr, "server>"); //커서 출력
+		}
+
+		// 클라이언트가 보낸 메시지를 모든 클라이언트에게 방송
+		for (i = 0; i < num_user; i++) {
+			if (FD_ISSET(clisock_list[i], &read_fds)) {
+				num_chat++;				//총 대화 수 증가
+				nbyte = recv(clisock_list[i], buf, MAXLINE, 0);
+				if (nbyte <= 0) {
+					removeClient(i);	// 클라이언트의 종료
+					continue;
+				}
+				buf[nbyte] = 0;
+				// 종료문자 처리
+				if (strstr(buf, EXIT_STRING) != NULL) {
+					removeClient(i);	// 클라이언트의 종료
+					continue;
+				}
+				// 모든 채팅 참가자에게 메시지 방송
+				for (j = 0; j < num_user; j++)
+					send(clisock_list[j], buf, nbyte, 0);
+				printf("\033[0G");		//커서의 X좌표를 0으로 이동
+				fprintf(stderr, "\033[97m");//글자색을 흰색으로 변경
+				printf("%s", buf);			//메시지 출력
+				fprintf(stderr, "\033[32m");//글자색을 녹색으로 변경
+				fprintf(stderr, "server>"); //커서 출력
+			}
+		}
+
+	}  // end of while
+
+	return 0;
+}
+
+// 새로운 채팅 참가자 처리
+void addClient(int s, struct sockaddr_in *newcliaddr) {
+	char buf[20];
+	inet_ntop(AF_INET, &newcliaddr->sin_addr, buf, sizeof(buf));
+	write(1, "\033[0G", 4);		//커서의 X좌표를 0으로 이동
+	fprintf(stderr, "\033[33m");	//글자색을 노란색으로 변경
+	printf("new client: %s\n", buf);//ip출력
+	// 채팅 클라이언트 목록에 추가
+	clisock_list[num_user] = s;
+	strcpy(ip_list[num_user], buf);
+	num_user++; //유저 수 증가
+}
+
+// 채팅 탈퇴 처리
+void removeClient(int s) {
+	close(clisock_list[s]);
+	if (s != num_user - 1) { //저장된 리스트 재배열
+		clisock_list[s] = clisock_list[num_user - 1];
+		strcpy(ip_list[s], ip_list[num_user - 1]);
+	}
+	num_user--; //유저 수 감소
+	ct = time(NULL);			//현재 시간을 받아옴
+	tm = *localtime(&ct);
+	write(1, "\033[0G", 4);		//커서의 X좌표를 0으로 이동
+	fprintf(stderr, "\033[33m");//글자색을 노란색으로 변경
+	printf("[%02d:%02d:%02d]", tm.tm_hour, tm.tm_min, tm.tm_sec);
+	printf("채팅 참가자 1명 탈퇴. 현재 참가자 수 = %d\n", num_user);
+	fprintf(stderr, "\033[32m");//글자색을 녹색으로 변경
+	fprintf(stderr, "server>"); //커서 출력
+}
+
+// 최대 소켓번호 찾기
+int getmax() {
+	// Minimum 소켓번호는 가정 먼저 생성된 listen_sock
+	int max = listen_sock;
+	int i;
+	for (i = 0; i < num_user; i++)
+		if (clisock_list[i] > max)
+			max = clisock_list[i];
+	return max;
+}
+
+// listen 소켓 생성 및 listen
+int  tcp_listen(int host, int port, int backlog) {
+	int sd;
+	struct sockaddr_in servaddr;
+
+	sd = socket(AF_INET, SOCK_STREAM, 0);
+	if (sd == -1) {
+		perror("socket fail");
+		exit(1);
+	}
+	// servaddr 구조체의 내용 세팅
+	bzero((char *)&servaddr, sizeof(servaddr));
+	servaddr.sin_family = AF_INET;
+	servaddr.sin_addr.s_addr = htonl(host);
+	servaddr.sin_port = htons(port);
+	if (bind(sd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0) {
+		perror("bind fail");  exit(1);
+	}
+	// 클라이언트로부터 연결요청을 기다림
+	listen(sd, backlog);
+	return sd;
+}
