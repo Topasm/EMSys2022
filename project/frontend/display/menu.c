@@ -9,11 +9,13 @@
 
 int dispaly_menu(void)
 {	
-	while (1)
+	/* while (1)
 	{
 		update_menu();
 		update_screen();
-	}
-	fb_close();
+	} */
+	update_menu();
+	update_screen();
+	//fb_close();
 	return 0;
 }

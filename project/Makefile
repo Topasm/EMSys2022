@@ -3,11 +3,11 @@ AR=arm-linux-gnueabi-ar
 LIBRARY_DIR := frontend device backend
 
 
-all: mju_baegu.out
+all: mju_baegu2.out
 
 
-mju_baegu.out: $(LIBRARY_DIR)
-	$(CC) -o mju_baegu.out main.c -lpthread -l mylib -L./frontend  -l MyPeri -L./device/libs -l PE -L./backend -l m
+mju_baegu2.out: $(LIBRARY_DIR)
+	$(CC) -o mju_baegu2.out main.c -l mylib -L./frontend  -l MyPeri -L./device/libs -l PE -L./backend -l m -lpthread
 
 
 $(LIBRARY_DIR):
