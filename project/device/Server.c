@@ -1,23 +1,14 @@
-#include <netinet/in.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#define PORT 8080
+#include "Server.h"
 
-int main(int arg, char const *argv[])
+void server_init()
 {
-    int mari_x, maru_x, ball_x;
-    int server_file_desc, new_socket, value_Read;
-    struct sockaddr_in socket_Address;
-    int option = 1;
-    int address_Length = sizeof(socket_Address);
-    char strCmd[100];
-    char buffer[100] = {0};
-    int result;
-    sprintf(strCmd, "./게임 '%d, %d, %d'", mari_x, maru_x, ball_x);
-    result = system(strCmd); //문자열 그대로 실행시키는 함수
+    
+struct sockaddr_in socket_Address;
+int option = 1;
+int address_Length = sizeof(socket_Address);
+
+
+int result;
 
     // Creating socket file descriptor
     if ((server_file_desc = socket(AF_INET, SOCK_STREAM, 0)) == 0)
@@ -53,20 +44,5 @@ int main(int arg, char const *argv[])
         perror("Connect is not Accepted.");
         exit(EXIT_FAILURE);
     }
-
-    // Reading the Message sent from Server
-    value_Read = read(new_socket, buffer, 100);
-    // printf ("Message from Client: %s \n", buffer); //버퍼에 클라이언트 메세지 쓰여있음
-
-    while (1)
-    {
-        printf("Message from Client: %s \n", buffer); //버퍼에 클라이언트 메세지 쓰여있음
-
-        send(new_socket, strCmd, strlen(strCmd), 0);
-        printf("Message from Server is Sent to client\n");
-    } // closing the connected socket
-    close(new_socket);
-    // closing the listening socket
-    shutdown(server_file_desc, SHUT_RDWR);
-    return 0;
 }
+

@@ -1,33 +1,11 @@
 //최종 프로젝트 파일
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <ctype.h>
-#include <sys/ipc.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include "device/driver.h"
-#include "frontend/display/move_left.h"
-#include "frontend/display/menu.h"
-#include "device/libs/button.h"
-#include "backend/PEobject.h"
-#include "backend/PEcollide.h"
-#include "backend/PEworld.h"
-#include "device/libs/gyro.h"
-
-object *ball;
-object *mari_obj;
-object *maru_obj;
+#include "main.h"
 
 void PE_init()
 {
     ball = generate_ball(60.0, 0.0);
-    //mari_obj = generate_character(10, 300);
-    //maru_obj = generate_character(20, 10);
+    // mari_obj = generate_character(10, 300);
+    // maru_obj = generate_character(20, 10);
 }
 
 int main(int argc, char **argv)
@@ -48,8 +26,9 @@ int main(int argc, char **argv)
     fb_clear();
     png_init();
     PE_init();
+    server_init();
     // int i = 0;
-     dispaly_menu();
+    dispaly_menu();
 
     // // button start
     // int msgID = buttonInit();
@@ -186,19 +165,30 @@ int main(int argc, char **argv)
     //         }
     //     }
 
+    // Reading the Message sent from Server
+    value_Read = read(new_socket, buffers, 100);
+    // printf ("Message from Client: %s \n", buffer); //버퍼에 클라이언트 메세지 쓰여있음
+    while (1)
+    {
+        printf("Message from Client: %s \n", buffers); //버퍼에 클라이언트 메세지 쓰여있음
+
+        send(new_socket, strCmd, strlen(strCmd), 0);
+        printf("Message from Server is Sent to client\n");
+    } // closing the connected socket
+
     while (1)
     {
         update_background();
         calculatePose(ball, 1.8);
-        //calculatePose(mari_obj, 1);
-        // int contact = CheckCollisionAnB(ball, mari_obj);
-        // if (contact == 1)
-        // {
-        //     CheckImpulseAnB(ball, mari_obj);
-        //     contact = 0;
-        // }
+        // calculatePose(mari_obj, 1);
+        //  int contact = CheckCollisionAnB(ball, mari_obj);
+        //  if (contact == 1)
+        //  {
+        //      CheckImpulseAnB(ball, mari_obj);
+        //      contact = 0;
+        //  }
         ContactGround(ball, 1);
-        //ContactGround(mari_obj, 0.8);
+        // ContactGround(mari_obj, 0.8);
         update_ball((int)ball->pos.x, (int)ball->pos.y);
         update_screen();
         // printf("ball pose x = %f y = %f contact = %d\n", ball->pos.x, ball->pos.y, contact);
@@ -206,5 +196,9 @@ int main(int argc, char **argv)
     }
 
     fb_close();
+    close(new_socket);
+
+    // closing the listening socket
+    shutdown(server_file_desc, SHUT_RDWR);
     return 0;
 }
