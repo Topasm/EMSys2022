@@ -16,24 +16,24 @@ void PE_init()
     maru_obj = generate_character(20, 10);
 }
 
-int main()
-{
-    PE_init();
-    while (1)
-    {
-        calculatePose(ball, 9.8);
-        calculatePose(mari_obj, 1);
-        int contact = CheckCollisionAnB(ball, mari_obj);
-        if(contact == 1)
-        {
-            CheckImpulseAnB(ball, mari_obj);
-            contact = 0;
-        }
-        ContactGround(ball, 0.8);
-        ContactGround(mari_obj, 0.8);
-        printf("ball pose x = %f y = %f contact = %d\n", ball->pos.x, ball->pos.y, contact);
-        printf("---mari_obj pose x = %f y = %f contact = %d\n", mari_obj->pos.x, mari_obj->pos.y, contact);
-        sleep(1);
+// int main()
+// {
+//     PE_init();
+//     while (1)
+//     {
+//         calculatePose(ball, 9.8);
+//         calculatePose(mari_obj, 1);
+//         int contact = CheckCollisionAnB(ball, mari_obj);
+//         if(contact == 1)
+//         {
+//             CheckImpulseAnB(ball, mari_obj);
+//             contact = 0;
+//         }
+//         ContactGround(ball, 0.8);
+//         ContactGround(mari_obj, 0.8);
+//         printf("ball pose x = %f y = %f contact = %d\n", ball->pos.x, ball->pos.y, contact);
+//         printf("---mari_obj pose x = %f y = %f contact = %d\n", mari_obj->pos.x, mari_obj->pos.y, contact);
+//         sleep(1);
         
-    }
-}
+//     }
+// }
