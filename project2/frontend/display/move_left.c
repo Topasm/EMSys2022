@@ -9,41 +9,162 @@
 #include "drawLCD.h"
 
 
-//int x=100; 
-//int flag_ForBack=1;
-
-/* void png_init()
-{
-	error = lodepng_decode32_file(&bg_data, &cols_bg, &rows_bg, bg_path);
-	if (error)
-		printf("background error %u: %s\n", error, lodepng_error_text(error));
-	
-	error = lodepng_decode32_file(&mari_data, &cols_mari, &rows_mari, mari_path);
-	if (error)
-		printf("error %u: %s\n", error, lodepng_error_text(error));
-	error = lodepng_decode32_file(&maru_data, &cols_maru, &rows_maru, maru_path);
-	if (error)
-		printf("error %u: %s\n", error, lodepng_error_text(error));
-}
-
-void update_background(void)
-{
-	picture_in_position(bg_data, cols_bg, rows_bg,0,0);
-}
-
-void update_mari(int posx, int posy)
-{
-	picture_in_position(mari_data, cols_mari, rows_mari,posx,posy);
-}
-void update_maru(int posx, int posy)
-{
-	picture_in_position(maru_data, cols_maru, rows_maru,posx,posy);
-} */
 
 
-
+//player 변수
+int player = 1; //1p or 2p
+int x1=0, x2=520;
+int dx1=0, dx2=0; //하나는 본인 키트에서 dx 받기 / 하나는 상대방 키트의 dx. 
 
 int move_left(void)
+{   
+   
+   while (1)
+   {
+        //1p: player==1
+        if(player==1)
+        {
+        	update_background();
+          	update_mari(x1,200);
+            update_maru(x2,200);
+          	update_screen();
+
+            //mari
+            if(x1>=240)   //not to over net
+          	{
+         		printf("mari saturation\n");
+         		dx1=get_dx();
+         		if(dx1>0)
+            		x1=x1-dx1;
+         		else
+            		x1=295;
+          	}   
+
+          	else if(x1<=0) // not to over left wall
+          	{
+         		printf("mari saturation\n");
+         		dx1=get_dx();
+         		if(dx1<0)
+            		x1=x1-dx1;
+         		else
+            		x1=0;
+          	}
+
+            else    //normal
+          	{
+         		printf("%d\n",x1);
+         		dx1=get_dx();
+         		x1=x1-dx1;
+         		printf("%d, %d\n",x1,dx1);
+          	}
+
+        //maru
+        	if(x2<=520)  //not to over net
+        	{
+        		printf("maru saturation\n");
+            	dx2=get_dx();
+            	if(dx2<0)
+                	x2=x2-dx2;
+            	else
+                	dx2=520;
+        	}
+
+        	else if(x2>=830)  //not to over right wall
+        	{
+            	printf("maru saturation\n");
+            	dx2=get_dx();
+         		if(dx2>0)
+            		x2=x2-dx2;
+         		else
+            		x2=830;
+        	}
+
+        	else    //normal
+        	{
+        		printf("%d\n",x1);
+         		dx2=get_dx();
+         		x2=x2-dx2;
+         		printf("%d, %d\n",x2,dx2);
+        	}
+
+
+        }
+
+        /* //2p: player==2
+        else
+        {
+            update_background();
+          update_mari(x1,200);
+            update_maru(x2,200);
+          update_screen();
+
+            //maru
+            if(x2<=300)  //not to over net
+            {
+            printf("maru saturation\n");
+            dx2=get_dx();
+            if(dx2<0)
+                x2=x2-dx2;
+            else
+                dx2=300;
+            }
+
+            else if(x2>=550)  //not to over right wall
+            {
+            printf("maru saturation\n");
+            dx2=get_dx();
+         if(dx2>0)
+            x2=x2-dx2;
+         else
+            x2=550;
+            }
+
+            else    //normal
+          {
+         printf("%d\n",x1);
+         dx2=get_dx();
+         x2=x2-dx2;
+         printf("%d, %d\n",x2,dx2);
+          }
+
+            //mari
+            if(x1>=240)   //not to over net
+          {
+         printf("mari saturation\n");
+         dx1=get_dx();
+         if(dx1>0)
+            x1=x1-dx1;
+         else
+            x1=295;
+          }   
+
+          else if(x1<=0) // not to over left wall
+          {
+         printf("mari saturation\n");
+         dx1=get_dx();
+         if(dx1<0)
+            x1=x1-dx1;
+         else
+            x1=0;
+          }
+
+            else    //normal
+          {
+         printf("%d\n",x1);
+         dx1=get_dx();
+         x1=x1-dx1;
+         printf("%d, %d\n",x1,dx1);
+          }
+
+        }    */
+   }
+   fb_close();
+   return 0;
+}
+
+
+//origianl code
+/* int move_left(void)
 {	
 	int x=0;
 	int dx=0;
@@ -82,4 +203,4 @@ int move_left(void)
 	}
 	fb_close();
 	return 0;
-}
+} */

@@ -7,7 +7,7 @@ all: mju_baegu.out
 
 
 mju_baegu.out: $(LIBRARY_DIR)
-	$(CC) -o mju_baegu.out main.c -lpthread -l mylib -L./frontend  -l MyPeri -L./device/libs -l m
+	$(CC) -o mju_baegu.out main.c -l mylib -L./frontend  -l MyPeri -L./device/libs -l m -lpthread
 
 
 $(LIBRARY_DIR):

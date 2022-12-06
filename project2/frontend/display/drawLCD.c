@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include "drawLCD.h"
 #include "../lodepng/lodepng.h"
+#include "../../device/libs/button.h"
 
 char *bg_data;
 char *mari_data;
@@ -13,9 +14,9 @@ char *menu_data;
 
 unsigned int error;
 const char *bg_path = "./source/background.png";
-const char *mari_path = "./source/mari.png";
-const char *maru_path = "./source/mari.png"; //maru 로 변경 해야 함
-const char *menu_path = "./source/menu.png";
+const char *mari_path = "./source/mari_mirrored.png";
+const char *maru_path = "./source/marusmall.png"; //maru 로 변경 해야 함
+const char *menu_path = "./source/player.png";
 
 int cols_bg = 0, rows_bg = 0;
 int cols_mari = 0, rows_mari = 0;

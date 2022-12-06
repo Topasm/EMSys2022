@@ -17,7 +17,6 @@ int buttonInit(void)
     return msgID;
 }
 
-
 static void *buttonThFunc(void)
 {
     // while(1){을 돌면서 / read(); / msgsnd(); }
@@ -34,6 +33,7 @@ static void *buttonThFunc(void)
         }
     }
 }
+
 
 int probeButtonPath(char *newPath)
 {
@@ -71,9 +71,9 @@ int probeButtonPath(char *newPath)
     {
         sprintf(newPath, "%s%d", INPUT_DEVICE_LIST, number);
     }
-
     return returnValue;
 }
+
 int buttonExit(void)
 {
     pthread_join(buttonTh_id, (void**)0);
