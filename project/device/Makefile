@@ -1,8 +1,13 @@
+all: libSocket.a
 
-all: library
-	
+libSocket.a: Server.o Client.o
+	arm-linux-gnueabi-ar rc libSocket.a Server.o Client.o
 
-library: 
-	$(MAKE) -C libs
+Server.o : Server.c
+	arm-linux-gnueabi-gcc -c Server.c -lpthread -o Server.o
 
-.PHONY: all libs library
+Client.o : Client.c
+	arm-linux-gnueabi-gcc -c Client.c -lpthread -o Client.o
+
+clean: 
+	rm -f *.o *.a

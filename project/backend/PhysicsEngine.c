@@ -9,12 +9,7 @@ object *ball;
 object *mari_obj;
 object *maru_obj;
 
-void PE_init()
-{
-    ball = generate_ball(10.0, 0.0);
-    mari_obj = generate_character(10, 300);
-    maru_obj = generate_character(20, 10);
-}
+
 
 // int main()
 // {
