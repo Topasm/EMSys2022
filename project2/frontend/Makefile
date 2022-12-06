@@ -20,6 +20,6 @@ move_left.o: display/move_left.c display/move_left.h
 drawLCD.o: display/drawLCD.c display/drawLCD.h
 	arm-linux-gnueabi-gcc -o drawLCD.o -c display/drawLCD.c -lpthread
 
-select_player_btn.o: display/select_player_btn.c display/select_player_btn.h ../device/button.o
-	arm-linux-gnueabi-gcc -o select_player_btn.o -c display/select_player_btn.c ../device/button.o -lpthread
+select_player_btn.o: display/select_player_btn.c display/select_player_btn.h
+	arm-linux-gnueabi-gcc -o select_player_btn.o -c display/select_player_btn.c
 
