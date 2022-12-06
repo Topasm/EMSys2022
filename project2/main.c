@@ -13,6 +13,8 @@
 #include "device/driver.h"
 #include "frontend/display/move_left.h"
 #include "frontend/display/menu.h"
+#include "device/libs/button.h"
+
 
 int main(int argc, char **argv)
 {
@@ -33,6 +35,69 @@ int main(int argc, char **argv)
 	png_init();
 	//int i = 0;
     dispaly_menu();
+
+
+	// button start
+	int msgID = buttonInit();
+    printf("buttonInit . . .\n");
+
+    BUTTON_MSG_T buttonMsg;
+    int recievedVal = 0;
+
+    /**/ while (1)
+    {
+        recievedVal = msgrcv(msgID, &buttonMsg, sizeof(buttonMsg) - 4, 0, IPC_NOWAIT);
+        if (recievedVal == -1)
+        {
+            printf("failed");
+			break;
+        }
+    } 
+
+    while (1)
+    {
+        recievedVal = msgrcv(msgID, &buttonMsg, sizeof(buttonMsg) - 4, 0, 0);
+        if (recievedVal < 0)
+        {
+            printf("error");
+        }
+
+        switch (buttonMsg.keyInput)
+        {
+        case KEY_VOLUMEUP:
+            printf("Volume up key):");
+            break;
+        case KEY_HOME:
+            printf("Home key):");
+            break;
+        case KEY_SEARCH:
+            printf("Search key):");
+            break;
+        case KEY_BACK:
+            printf("Back key):");
+            break;
+        case KEY_MENU:
+            printf("Menu key):");
+            break;
+        case KEY_VOLUMEDOWN:
+            printf("Volume down key):");
+            break;
+        }
+
+        if (buttonMsg.pressed)
+        {
+            printf("pressed\n");
+        }
+        else
+        {
+            printf("released\n");
+        }
+    }
+    buttonExit();
+	//button fin
+
+
+	sleep(3);
 	move_left();
 	
     fb_close();

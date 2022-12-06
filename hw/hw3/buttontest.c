@@ -47,6 +47,7 @@ int main(int argc, char *argv[])
             printf("Volume down key):");
             break;
         }
+        
         if (buttonMsg.pressed)
         {
             printf("pressed\n");
