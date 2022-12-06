@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #define PORT 8080
 
-int sock = 0, value_Read, client_file_descriptor;
+int  value_Read, client_file_descriptor;
 char strCmd[100];
-char buffer[100] = {0};
-void client_init();
+
+int client_init();

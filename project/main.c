@@ -1,4 +1,5 @@
 //최종 프로젝트 파일
+
 #include "main.h"
 
 void PE_init()
@@ -7,6 +8,28 @@ void PE_init()
     // mari_obj = generate_character(10, 300);
     // maru_obj = generate_character(20, 10);
 }
+
+static pthread_t rcv_thread;
+int sock = 0;
+
+static void *ClientThFunc(void){
+    sock =client_init();
+
+    send(sock, strCmd, strlen(strCmd), 0);
+    // send message to socket server using send method
+    printf("Message from Client Successfully Sent\n");
+    while (1)
+    {
+
+        value_Read = read(sock, strCmd, 100);
+        printf("Response from Server: %s\n", strCmd);
+    }
+        send(sock, strCmd, strlen(strCmd), 0);
+    
+}
+
+
+
 
 int main(int argc, char **argv)
 {
@@ -26,10 +49,16 @@ int main(int argc, char **argv)
     fb_clear();
     png_init();
     PE_init();
-    server_init();
-    client_init();
+    //server_init();
+    pthread_create(&rcv_thread, NULL, ClientThFunc, (void*)&sock);
+
     // int i = 0;
     dispaly_menu();
+
+
+
+
+
 
     // // button start
     // int msgID = buttonInit();
@@ -166,6 +195,12 @@ int main(int argc, char **argv)
     //         }
     //     }
 
+    // int gyro[2];
+
+    //  int result;
+    //     sprintf(strCmd, "./gyroTest '%d, %d, %d'", gyro[0], gyro[1], gyro[2]);
+    //     result = system(strCmd); //문자열 그대로 실행시키는 함수
+
     // Reading the Message sent from Server
     value_Read = read(new_socket, buffers, 100);
     // printf ("Message from Client: %s \n", buffer); //버퍼에 클라이언트 메세지 쓰여있음
@@ -201,16 +236,26 @@ int main(int argc, char **argv)
 
     // closing the listening socket
     shutdown(server_file_desc, SHUT_RDWR);
-/////////////////////////////////////////////////////////////이 아래로 클라이언트
-    send(sock, strCmd, strlen(strCmd), 0);
-    // send message to socket server using send method
-    printf("Message from Client Successfully Sent\n");
-    while (1)
-    {
+    /////////////////////////////////////////////////////////////이 아래로 클라이언트
 
-        value_Read = read(sock, strCmd, 100);
-        printf("Response from Server: %s\n", strCmd);
-    }
+
+
+
+
+
+
+
+    // pthread_t snd_thread, rcv_thread;
+    // void *thread_return;
+
+
+     
+    // pthread_create(&rcv_thread, NULL, recv_msg, (void*)&sock);
+    // pthread_join(snd_thread, &thread_return);
+
+
+    // pthread_join(rcv_thread, &thread_return);
+    // close(sock);
 
     close(client_file_descriptor);
     return 0;
