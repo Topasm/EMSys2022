@@ -9,3 +9,5 @@
 int server_file_desc, new_socket, value_Read;
 char strCmd[100];
 char buffer[100] = {0};
+int sock = 0, value_Read, client_file_descriptor;
+struct sockaddr_in server_address;

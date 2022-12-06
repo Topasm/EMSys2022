@@ -2,8 +2,7 @@
 
 void client_init()
 {
-    int sock = 0, value_Read, client_file_descriptor;
-    struct sockaddr_in server_address;
+
     // char *message = "클라이언트에서 보내는 x, y좌표"; //서버로 보내는 메세지
 
     int result;

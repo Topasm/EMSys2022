@@ -6,8 +6,6 @@ void server_init()
 struct sockaddr_in socket_Address;
 int option = 1;
 int address_Length = sizeof(socket_Address);
-
-
 int result;
 
     // Creating socket file descriptor

@@ -26,8 +26,8 @@ int main(int argc, char **argv)
     fb_clear();
     png_init();
     PE_init();
-    server_init();
-    client_init();
+    // server_init();
+    // client_init();
     // int i = 0;
     dispaly_menu();
 
@@ -166,16 +166,16 @@ int main(int argc, char **argv)
     //         }
     //     }
 
-    // Reading the Message sent from Server
-    value_Read = read(new_socket, buffers, 100);
-    // printf ("Message from Client: %s \n", buffer); //버퍼에 클라이언트 메세지 쓰여있음
-    while (1)
-    {
-        printf("Message from Client: %s \n", buffers); //버퍼에 클라이언트 메세지 쓰여있음
+    // // Reading the Message sent from Server
+    // value_Read = read(new_socket, buffers, 100);
+    // // printf ("Message from Client: %s \n", buffer); //버퍼에 클라이언트 메세지 쓰여있음
+    // while (1)
+    // {
+    //     printf("Message from Client: %s \n", buffers); //버퍼에 클라이언트 메세지 쓰여있음
 
-        send(new_socket, strCmd, strlen(strCmd), 0);
-        printf("Message from Server is Sent to client\n");
-    } // closing the connected socket
+    //     send(new_socket, strCmd, strlen(strCmd), 0);
+    //     printf("Message from Server is Sent to client\n");
+    // } // closing the connected socket
 
     while (1)
     {
