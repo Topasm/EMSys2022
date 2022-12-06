@@ -4,8 +4,8 @@ AR=arm-linux-gnueabi-ar
 all: libPE.a
 
 
-libPE.a: PEcollide.o
-	$(AR) rc libPE.a PEcollide.o
+libPE.a: PEcollide.o PEobject.o PEworld.o
+	$(AR) rc libPE.a PEcollide.o PEworld.o PEobject.o
 
 PEcollide.o: PEcollide.h PEcollide.c
 	$(CC) -c PEcollide.c -o PEcollide.o -lpthread -l m
