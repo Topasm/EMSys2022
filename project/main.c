@@ -27,6 +27,7 @@ int main(int argc, char **argv)
     png_init();
     PE_init();
     server_init();
+    client_init();
     // int i = 0;
     dispaly_menu();
 
@@ -200,5 +201,17 @@ int main(int argc, char **argv)
 
     // closing the listening socket
     shutdown(server_file_desc, SHUT_RDWR);
+/////////////////////////////////////////////////////////////이 아래로 클라이언트
+    send(sock, strCmd, strlen(strCmd), 0);
+    // send message to socket server using send method
+    printf("Message from Client Successfully Sent\n");
+    while (1)
+    {
+
+        value_Read = read(sock, strCmd, 100);
+        printf("Response from Server: %s\n", strCmd);
+    }
+
+    close(client_file_descriptor);
     return 0;
 }
