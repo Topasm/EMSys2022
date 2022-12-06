@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <pthread.h
 #include "device/driver.h"
 #include "frontend/display/move_left.h"
 #include "frontend/display/menu.h"
