@@ -12,7 +12,7 @@ void client_init()
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         printf("In Error while creation of Socket \n");
-        return -1;
+        return -1
     }
 
     server_address.sin_family = AF_INET;
