@@ -7,6 +7,7 @@ char buttonPath[256] = {
     0,
 };
 
+
 int buttonInit(void)
 {
     if (probeButtonPath(buttonPath) == 0)
