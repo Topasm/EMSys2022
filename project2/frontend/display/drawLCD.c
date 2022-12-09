@@ -57,6 +57,13 @@ void update_menu(void)
 {
 	picture_in_position(menu_data, cols_menu, rows_menu,0,0);
 }
-
+void choose_mari(void)
+{
+	picture_in_position(mari_data, cols_mari, rows_mari, 200,200);
+}
+void choose_maru(void)
+{
+	picture_in_position(maru_data, cols_maru, rows_maru, 200,200);
+}
 
 

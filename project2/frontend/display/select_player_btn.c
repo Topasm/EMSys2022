@@ -1,9 +1,7 @@
     #include "../../device/libs/button.h"
     #include "select_player_btn.h"
     // button start
-
-
-
+    
     int select_player(int argc, char *argv[])
     {
         int msgID = buttonInit();
@@ -11,32 +9,35 @@
 
         BUTTON_MSG_T buttonMsg;
         int recievedVal = 0;
-
-
+        int player=1;
+        buttonMsg.keyInput=0;
+        
         while (1)
         {
             recievedVal = msgrcv(msgID, &buttonMsg, sizeof(buttonMsg) - 4, 0, 0);
-        
+            printf("i'm in while... key=%d\n", buttonMsg.keyInput);
             switch (buttonMsg.keyInput)
             {
             case KEY_VOLUMEUP:
-                printf("Volume up key):");
+                player=0;
                 break;
             case KEY_HOME:
-                printf("PALYER 1:");
-                break;
+                player=1;
+                break;                 
             case KEY_SEARCH:
-                printf("Search key):");
+                player=0;
                 break;
             case KEY_BACK:
-                printf("PLAYER 2:");
+                player=2;
                 break;
             case KEY_MENU:
-                printf("Menu key):");
+                player=0;
                 break;
             case KEY_VOLUMEDOWN:
-                printf("Volume down key):");
+                player=0;
                 break;
+            
+            printf("%d // ",player);
         }
 
         if (buttonMsg.pressed)
@@ -45,14 +46,18 @@
         }
         else
         {
-            printf("complete\n"); 
-        }
+            if(player==1||player==2){
+                printf("\nfinal player: %d ", player);
+                printf("complete\n"); 
+                return player; 
+            }
+            
+    }
 
     }
+    printf("exit 실행...?\n");
     buttonExit();
 
-        
+     
     }
 
-
-	

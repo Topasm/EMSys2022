@@ -2,6 +2,24 @@
 
 #include "main.h"
 
+
+typedef struct{
+    int ball_x;
+    int ball_y;
+    int mari_x;
+    int mari_y;
+    int maru_x;
+    int maru_y;
+    int score;    //기본 0 1 이면 1번 승 2면 2번승
+}server2client;
+
+typedef struct{
+    int whichChar; //어떤 캐릭터 선택
+    int gyrodata;
+}client2server;
+
+
+
 void PE_init()
 {
     ball = generate_ball(60.0, 0.0);
