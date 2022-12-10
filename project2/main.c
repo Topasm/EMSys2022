@@ -40,12 +40,9 @@ int main(int argc, char **argv)
 	printf("select_player fin\n");
 	if(player==1){
         printf("Your mari\n");
-		choose_mari();
-		dispaly_menu();
     }
     else if(player==2){
         printf("Your maru\n");
-		choose_maru();
 	}
 	//button fin
 	printf("out of if else\n");

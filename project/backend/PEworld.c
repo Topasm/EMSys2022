@@ -17,15 +17,20 @@ float calculatePose(object *mass, float gravity)
 
 void ContactGround(object *a, float elastic)
 {
-    if(a->pos.y>400 && a->vel.y>0)
+    if(a->pos.y>400 && a->vel.y>0.5)
     {
         if(a->vel.y<1)
         {
-            a->vel.y+=2;
+            a->vel.y = 0;
+            a->pos.y = 400;
         }
         a->vel.y*=-elastic;
-        printf("contact%d", a->pos.x);
-
+        printf("contact%d", a->vel.y);
+    }
+    else
+    {
+        a->vel.y = 0;
+        a->pos.y = 400;        
     }
 }
 

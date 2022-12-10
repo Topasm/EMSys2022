@@ -18,7 +18,13 @@ typedef struct{
     int gyrodata;
 }client2server;
 
+<<<<<<< HEAD
 
+=======
+char buffers[100];
+
+static pthread_t ServerTh_id;
+>>>>>>> 0e3e9c52645ea18aca54da29c15f0d4ffd35444e
 
 void PE_init()
 {
@@ -46,6 +52,25 @@ static void *ClientThFunc(void){
     
 }
 
+static void *Server_thread(void)
+{
+    // while(1){을 돌면서 / read(); / msgsnd(); }
+    server_init();
+    
+
+    // Reading the Message sent from Server
+    value_Read = read(new_socket, buffers, 100);
+    // printf ("Message from Client: %s \n", buffer); //버퍼에 클라이언트 메세지 쓰여있음
+    while (1)
+    {
+        printf("Message from Client: %s \n", buffers); //버퍼에 클라이언트 메세지 쓰여있음
+
+        send(new_socket, strCmd, strlen(strCmd), 0);
+        printf("Message from Server is Sent to client\n");
+    } // closing the connected socket
+}
+
+
 
 
 
@@ -70,6 +95,10 @@ int main(int argc, char **argv)
     //server_init();
     pthread_create(&rcv_thread, NULL, ClientThFunc, (void*)&sock);
 
+    // int i = 0;
+    pthread_create(&ServerTh_id,NULL, Server_thread,NULL);
+    
+    // client_init();
     // int i = 0;
     dispaly_menu();
 
@@ -213,12 +242,6 @@ int main(int argc, char **argv)
     //         }
     //     }
 
-    // int gyro[2];
-
-    //  int result;
-    //     sprintf(strCmd, "./gyroTest '%d, %d, %d'", gyro[0], gyro[1], gyro[2]);
-    //     result = system(strCmd); //문자열 그대로 실행시키는 함수
-
     // Reading the Message sent from Server
     value_Read = read(new_socket, buffers, 100);
     // printf ("Message from Client: %s \n", buffer); //버퍼에 클라이언트 메세지 쓰여있음
@@ -226,9 +249,6 @@ int main(int argc, char **argv)
     {
         printf("Message from Client: %s \n", buffers); //버퍼에 클라이언트 메세지 쓰여있음
 
-        send(new_socket, strCmd, strlen(strCmd), 0);
-        printf("Message from Server is Sent to client\n");
-    } // closing the connected socket
 
     while (1)
     {
@@ -274,7 +294,10 @@ int main(int argc, char **argv)
 
     // pthread_join(rcv_thread, &thread_return);
     // close(sock);
-
+    }
     close(client_file_descriptor);
     return 0;
 }
+
+
+

@@ -9,5 +9,4 @@
 
 int server_file_desc, new_socket, value_Read;
 char strCmd[100];
-char buffers[100] = {0};
 void server_init();
