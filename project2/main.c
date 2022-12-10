@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 	int screen_height;
 	int bits_per_pixel;
 	int line_length;
-    int player=0;
+    PLAYER=0;
 	/*FrameBuffer init*/
 	if (fb_init(&screen_width, &screen_height, &bits_per_pixel, &line_length) < 0)
 	{
@@ -35,17 +35,7 @@ int main(int argc, char **argv)
 	png_init();
 	//int i = 0;
     dispaly_menu();
-	printf("select_player start\n");
-    player=select_player();
-	printf("select_player fin\n");
-	if(player==1){
-        printf("Your mari\n");
-    }
-    else if(player==2){
-        printf("Your maru\n");
-	}
-	//button fin
-	printf("out of if else\n");
+	select_player();
 
 	sleep(3);
 	move_left();

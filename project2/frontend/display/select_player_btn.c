@@ -9,7 +9,7 @@
 
         BUTTON_MSG_T buttonMsg;
         int recievedVal = 0;
-        int player=1;
+        PLAYER=0;
         buttonMsg.keyInput=0;
         
         while (1)
@@ -19,25 +19,25 @@
             switch (buttonMsg.keyInput)
             {
             case KEY_VOLUMEUP:
-                player=0;
+                PLAYER=0;
                 break;
             case KEY_HOME:
-                player=1;
+                PLAYER=1;
                 break;                 
             case KEY_SEARCH:
-                player=0;
+                PLAYER=0;
                 break;
             case KEY_BACK:
-                player=2;
+                PLAYER=2;
                 break;
             case KEY_MENU:
-                player=0;
+                PLAYER=0;
                 break;
             case KEY_VOLUMEDOWN:
-                player=0;
+                PLAYER=0;
                 break;
             
-            printf("%d // ",player);
+            printf("%d // ",PLAYER);
         }
 
         if (buttonMsg.pressed)
@@ -46,18 +46,22 @@
         }
         else
         {
-            if(player==1||player==2){
-                printf("\nfinal player: %d ", player);
-                printf("complete\n"); 
-                return player; 
+            printf("select_player fin\n");
+	        if(PLAYER==1){
+                printf("Your mari\n");
+                return 1;
             }
+            else if(PLAYER==2){
+                printf("Your maru\n");
+                return 2;
+	        }
             
     }
 
     }
-    printf("exit 실행...?\n");
     buttonExit();
 
      
     }
+
 
