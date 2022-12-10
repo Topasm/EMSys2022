@@ -77,3 +77,7 @@ int check(int dx1, int dx2)
 	fb_close();
 	return 0;
 }
+
+
+
+
