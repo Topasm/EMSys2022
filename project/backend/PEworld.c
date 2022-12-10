@@ -6,31 +6,37 @@
 
 #define STRUCT_ZERO(T) ((T){0})
 
-float calculatePose(object *mass, float gravity)
+void calculateG(object *mass, float gravity)
 {
     mass->acc.y = gravity;
     mass->vel.y += gravity;
+}
+
+void calculateP(object *mass)
+{
+    
     mass->pos.y += mass->vel.y;
-    return mass->pos.y;
+    mass->pos.x += mass->vel.x;
+    //return mass->pos.y;
 }
 
 void ContactGround(object *a, float elastic)
 {
-    if (a->pos.y > 400 && a->vel.y > 0.5)
+    if (a->pos.y > 350)
     {
-        if (a->vel.y < 1)
+        if (a->vel.y < 0.1)
         {
             a->vel.y = 0;
-            a->pos.y = 400;
+            a->pos.y = 350;
         }
         a->vel.y *= -elastic;
-        printf("contact%d", a->vel.y);
+        printf("contact%f", a->vel.y);
     }
-    else
-    {
-        a->vel.y = 0;
-        a->pos.y = 400;
-    }
+    // else
+    // {
+    //     a->vel.y = 0;
+    //     a->pos.y = 400;
+    // }
 }
 
 // player 변수

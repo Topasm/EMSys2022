@@ -22,10 +22,12 @@ object* generate_character(float x, float y)
     character = (object *)malloc(sizeof(object));
     character->pos.x = x;
     character->pos.y = y;
+    character->vel.x = 0;
+    character->vel.y = 0;
    
     character->inv_mass = 0.1;
-    character->size.x = 150;
-    character->size.y = 200;
+    character->size.x = 50;
+    character->size.y = 100;
     
     return (object*)character;
 }

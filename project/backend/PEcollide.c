@@ -5,10 +5,10 @@
 
 int CheckCollisionAnB(object* a, object* b)
 {
-    int ax_h = a->size.x/2;
-    int ay_h = a->size.y/2;
-    int bx_h = b->size.x/2;
-    int by_h = b->size.y/2;
+    float ax_h = a->size.x/2;
+    float ay_h = a->size.y/2;
+    float bx_h = b->size.x/2;
+    float by_h = b->size.y/2;
 
     if (a->pos.x+ax_h < b->pos.x - bx_h|| a->pos.x- ax_h > b->pos.x+ bx_h) return 0;
     if (a->pos.y+ay_h < b->pos.y - by_h|| a->pos.y- ay_h > b->pos.y+ by_h) return 0;
@@ -18,16 +18,16 @@ int CheckCollisionAnB(object* a, object* b)
 
 int CheckImpulseAnB(object* a, object* b)
 {
-    PEVector2 bvel = b->vel;
-    PEVector2 avel = a->vel;
-    float mass1 = 1;
-    float mass2 = 0.01;
-    a->vel.x = -mass1*avel.x;
-    a->vel.y = -mass1*avel.y;
-    b->vel.x = -mass2*bvel.x;
-    b->vel.y = -mass2*bvel.y;
+    float mass1 = 2;
+    // float mass2 = 0.01;
+    int state = 0;
+    
+    a->vel.x = -mass1*a->vel.x;
+    a->vel.y = -mass1*a->vel.y;
 
-    printf("objec collide\n");
+   
+
+    printf("objec collide\n%f",a->vel.y);
     
 }
 
