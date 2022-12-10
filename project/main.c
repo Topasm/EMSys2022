@@ -78,7 +78,7 @@ static void *Bgm_thread(void)
     // while문을 돌면서 음악 재생
     buzzerInit();
 
-    while(1)BgmTh_id;
+    while(1)
     {
     buzzerPlaySong(2);
     usleep(200000);
