@@ -18,7 +18,7 @@ typedef struct{
     int gyrodata;
 }client2server;
 
-
+char buffers[100];
 
 static pthread_t ServerTh_id;
 
@@ -47,6 +47,25 @@ static void *ClientThFunc(void){
         send(sock, strCmd, strlen(strCmd), 0);
     
 }
+
+static void *Server_thread(void)
+{
+    // while(1){을 돌면서 / read(); / msgsnd(); }
+    server_init();
+    
+
+    // Reading the Message sent from Server
+    value_Read = read(new_socket, buffers, 100);
+    // printf ("Message from Client: %s \n", buffer); //버퍼에 클라이언트 메세지 쓰여있음
+    while (1)
+    {
+        printf("Message from Client: %s \n", buffers); //버퍼에 클라이언트 메세지 쓰여있음
+
+        send(new_socket, strCmd, strlen(strCmd), 0);
+        printf("Message from Server is Sent to client\n");
+    } // closing the connected socket
+}
+
 
 
 
@@ -271,7 +290,7 @@ int main(int argc, char **argv)
 
     // pthread_join(rcv_thread, &thread_return);
     // close(sock);
-
+    }
     close(client_file_descriptor);
     return 0;
 }
