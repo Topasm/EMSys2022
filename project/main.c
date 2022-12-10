@@ -1,8 +1,8 @@
 // 최종 프로젝트 파일
 #include "main.h"
-int sock = 0;
-int new_socket = 0;
-char servip[100];
+int sock;
+int new_socket;
+char servip[30] = {0};
 
 static pthread_t ServerTh_id;
 static pthread_t BgmTh_id;
@@ -18,10 +18,8 @@ typedef struct server2client
     int ball_x;
     int ball_y;
     int mari_x;
-    int mari_y;
     int maru_x;
-    int maru_y;
-    int score; // 기본 4 0 이면 1번 승 8면 2번승
+    int score;
 } s2c;
 
 s2c s2c2;
@@ -40,28 +38,27 @@ void PE_init()
     // mari_obj = generate_character(10, 300);
     // maru_obj = generate_character(20, 10);
 }
-static void *ClientThFunc(void)
-{
-    sock = client_init();
+// static void *ClientThFunc(void)
+// {
+//     sock = client_init();
 
-    // value_Read = recv(sock, (struct server2client *)&s2c, sizeof(s2c), 0);
-    // send message to socket server using send method
-    printf("Message from Client Successfully Sent\n");
-    while (1)
-    {
-        // value_Read = read(sock, strCmd, 100);
+//     // value_Read = recv(sock, (struct server2client *)&s2c, sizeof(s2c), 0);
+//     // send message to socket server using send method
+//     printf("Message from Client Successfully Sent\n");
+//     while (1)
+//     {
 
-        value_Read = recv(new_socket, (struct server2client *)&s2c2, sizeof(s2c2), 0);
-        printf("%d \n", s2c2.ball_x);
-        printf("%d \n", s2c2.ball_y);
-        printf("%d \n", s2c2.mari_x);
-        printf("%d \n", s2c2.mari_y);
-        printf("%d \n", s2c2.maru_x);
-        printf("%d \n", s2c2.maru_y);
-        printf("%d \n", s2c2.score);
-        send(sock, (struct client2server *)&c2s2, sizeof(c2s2), 0);
-    }
-}
+//         value_Read = recv(sock, (struct server2client *)&s2c2, sizeof(s2c2), 0);
+//         printf("%d00 \n", s2c2.ball_x);
+//         printf("%daa \n", s2c2.ball_y);
+//         printf("%dbb \n", s2c2.mari_x);
+
+//         printf("%ddd \n", s2c2.maru_x);
+
+//         printf("%dgg \n", s2c2.score);
+//         send(sock, (struct client2server *)&c2s2, sizeof(c2s2), 0);
+//     }
+// }
 
 static void *Server_thread(void)
 {
@@ -71,14 +68,10 @@ static void *Server_thread(void)
     while (1)
     {
         send(new_socket, (struct server2client *)&s2c2, sizeof(s2c2), 0);
-        value_Read = recv(sock, (struct client2server *)&c2s2, sizeof(c2s2), 0);
-        // printf("Message from Client: %s \n", buffers); // 버퍼에 클라이언트 메세지 쓰여있음
-
-        printf("%d \n", c2s2.whichChar);
-        printf("%d \n", c2s2.gyrodata);
-
-        // printf("Message from Server is Sent to client\n");
-    } // closing the connected socket
+        value_Read = recv(new_socket, (struct client2server *)&c2s2, sizeof(c2s2), 0);
+        printf("%dff \n", c2s2.whichChar);
+        printf("%dhh \n", c2s2.gyrodata);
+    }
 }
 
 // BGM start
@@ -91,48 +84,48 @@ static void *Bgm_thread(void)
 
     while (1)
     {
-        buzzerPlaySong(2);
-        usleep(200000);
-        buzzerStopSong();
-        usleep(200000);
-        buzzerPlaySong(1);
-        usleep(200000);
-        buzzerStopSong();
-        usleep(200000);
-        buzzerPlaySong(0);
-        usleep(200000);
-        buzzerStopSong();
-        usleep(200000);
-        buzzerPlaySong(1);
-        usleep(200000);
-        buzzerStopSong();
-        usleep(400000);
+        // buzzerPlaySong(2);
+        // usleep(200000);
+        // buzzerStopSong();
+        // usleep(200000);
+        // buzzerPlaySong(1);
+        // usleep(200000);
+        // buzzerStopSong();
+        // usleep(200000);
+        // buzzerPlaySong(0);
+        // usleep(200000);
+        // buzzerStopSong();
+        // usleep(200000);
+        // buzzerPlaySong(1);
+        // usleep(200000);
+        // buzzerStopSong();
+        // usleep(400000);
 
-        buzzerPlaySong(2);
-        usleep(200000);
-        buzzerStopSong();
-        usleep(200000);
-        buzzerPlaySong(2);
-        usleep(200000);
-        buzzerStopSong();
-        usleep(200000);
-        buzzerPlaySong(2);
-        usleep(200000);
-        buzzerStopSong();
-        usleep(400000);
+        // buzzerPlaySong(2);
+        // usleep(200000);
+        // buzzerStopSong();
+        // usleep(200000);
+        // buzzerPlaySong(2);
+        // usleep(200000);
+        // buzzerStopSong();
+        // usleep(200000);
+        // buzzerPlaySong(2);
+        // usleep(200000);
+        // buzzerStopSong();
+        // usleep(400000);
 
-        buzzerPlaySong(1);
-        usleep(200000);
-        buzzerStopSong();
-        usleep(200000);
-        buzzerPlaySong(1);
-        usleep(200000);
-        buzzerStopSong();
-        usleep(200000);
-        buzzerPlaySong(1);
-        usleep(200000);
-        buzzerStopSong();
-        usleep(400000);
+        // buzzerPlaySong(1);
+        // usleep(200000);
+        // buzzerStopSong();
+        // usleep(200000);
+        // buzzerPlaySong(1);
+        // usleep(200000);
+        // buzzerStopSong();
+        // usleep(200000);
+        // buzzerPlaySong(1);
+        // usleep(200000);
+        // buzzerStopSong();
+        // usleep(400000);
     }
 }
 
@@ -144,12 +137,9 @@ int main(int argc, char **argv)
     int bits_per_pixel;
     int line_length;
 
-    argv[1] = servip[100];
     printf("write your ip : ");
-    scanf("%s", servip[100]);
-
-    send(sock, servip, strlen(servip), 0);
-
+    scanf("%s", servip);
+    argv[1] = servip;
     // servip client로 메세지 send
     /*FrameBuffer init*/
     if (fb_init(&screen_width, &screen_height, &bits_per_pixel, &line_length) < 0)
@@ -163,8 +153,11 @@ int main(int argc, char **argv)
     PE_init();
 
     pthread_create(&BgmTh_id, NULL, Bgm_thread, NULL);
-    pthread_create(&rcv_thread, NULL, ClientThFunc, (void *)&sock);
+
     pthread_create(&ServerTh_id, NULL, Server_thread, NULL);
+    send(new_socket, servip, strlen(servip), 0);
+
+    // pthread_create(&rcv_thread, NULL, ClientThFunc, (void *)&sock);
 
     dispaly_menu();
 
@@ -194,7 +187,7 @@ int main(int argc, char **argv)
         // closing the listening socket
         shutdown(new_socket, SHUT_RDWR);
     }
-    close(sock);
+    // close(sock);
     close(new_socket);
     return 0;
 }
