@@ -15,7 +15,7 @@
         while (1)
         {
             recievedVal = msgrcv(msgID, &buttonMsg, sizeof(buttonMsg) - 4, 0, 0);
-            printf("i'm in while... key=%d\n", buttonMsg.keyInput);
+            //printf("i'm in while... key=%d\n", buttonMsg.keyInput);
             switch (buttonMsg.keyInput)
             {
             case KEY_VOLUMEUP:
@@ -52,13 +52,14 @@
                 return 1;
             }
             else if(PLAYER==2){
-                printf("Your maru\n");
-                return 2;
+            printf("Your maru\n");
+            return 2;
 	        }
             
     }
 
     }
+    printf("exit 실행...?\n");
     buttonExit();
 
      

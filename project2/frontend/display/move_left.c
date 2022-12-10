@@ -6,6 +6,7 @@
 #include "../libfbdev/libfbdev.h"
 #include "../lodepng/lodepng.h"
 #include "../../device/libs/gyro.h"
+#include "../../device/libs/led.h"
 #include "drawLCD.h"
 
 
@@ -13,9 +14,10 @@
 
 //player 변수
 int player = 1; //1p or 2p
-int x1=0, x2=520;
+int x1=120, x2=700;
 int dx1=0, dx2=0; //하나는 본인 키트에서 dx 받기 / 하나는 상대방 키트의 dx. 
-
+SATU_MARI=0;
+int pre_satu_mari=0;
 int move_left(void)
 {   
    
@@ -28,7 +30,7 @@ int move_left(void)
           	update_mari(x1,200);
             update_maru(x2,200);
           	update_screen();
-
+			
             //mari
             if(x1>=240)   //not to over net
           	{
@@ -43,6 +45,7 @@ int move_left(void)
           	else if(x1<=0) // not to over left wall
           	{
          		printf("mari saturation\n");
+				SATU_MARI++;
          		dx1=get_dx();
          		if(dx1<0)
             		x1=x1-dx1;
@@ -86,10 +89,14 @@ int move_left(void)
          		x2=x2-dx2;
          		printf("%d, %d\n",x2,dx2);
         	}
-
-
         }
 
+		if(SATU_MARI==pre_satu_mari+1)
+		{
+			led();
+			pre_satu_mari=SATU_MARI;
+		}
+		
         /* //2p: player==2
         else
         {

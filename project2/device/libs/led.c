@@ -5,6 +5,8 @@
 static unsigned int ledValue = 0;
 static int fd = 0;
 
+
+
 int ledLibInit(void)
 {
     fd = open("/dev/periled", O_WRONLY);
@@ -32,4 +34,15 @@ int ledLibExit(void)
     ledValue = 0;
     ledOnOff(0,0);
     close(fd);
+}
+
+void led()
+{
+    ledLibInit();
+    ledOnOff(SATU_MARI, ON);
+    ledLibStatus();
+    usleep(10000);
+    ledOnOff(SATU_MARI, OFF);
+    
+    ledLibExit();
 }
