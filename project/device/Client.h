@@ -9,4 +9,4 @@
 int  value_Read, client_file_descriptor;
 
 
-int client_init();
+int client_init(char *servip);

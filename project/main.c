@@ -56,9 +56,7 @@ static void *ClientThFunc(void)
             printf("%d \n", s2c2.ball_x);
             printf("%d \n", s2c2.ball_y);
             printf("%d \n", s2c2.mari_x);
-            printf("%d \n", s2c2.mari_y);
             printf("%d \n", s2c2.maru_x);
-            printf("%d \n", s2c2.maru_y);
             printf("%d \n", s2c2.score);
         }
         send(sock, (struct client2server *)&c2s2, sizeof(c2s2), 0);
@@ -91,7 +89,6 @@ static void *Server_thread(void)
 
 // BGM start
 static void *Bgm_thread(void)
-{
 {
     // while문을 돌면서 음악 재생
 

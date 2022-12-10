@@ -2,7 +2,6 @@
 
 int client_init(char *servip)
 {
-    char servip[30] = {0};
 
     int sock = 0;
     struct sockaddr_in server_address;
