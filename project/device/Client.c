@@ -2,6 +2,8 @@
 
 int client_init(char *servip)
 {
+    char servip[30] = {0};
+
     int sock = 0;
     struct sockaddr_in server_address;
     // char *message = "클라이언트에서 보내는 x, y좌표"; //서버로 보내는 메세지
@@ -30,14 +32,8 @@ int client_init(char *servip)
         printf("\nInvalid server address/ Address not found \n");
         return -1;
     }
-/////////////////////
 
-    //   if (INADDR_ANY != servip)
-    // {
-    //     printf("\nInvalid server address/ Address not found \n");
-    //     return -1;
-    // }
-////////////////////
+    // Going to connet to the socket server using connect method
     if ((client_file_descriptor = connect(sock, (struct sockaddr *)&server_address, sizeof(server_address))) < 0)
     {
         printf("\nConnection Failed with the server \n");

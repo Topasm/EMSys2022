@@ -2,11 +2,10 @@
 
 int server_init()
 {
-    
-struct sockaddr_in socket_Address;
-int option = 1;
-int address_Length = sizeof(socket_Address);
-int result;
+
+    struct sockaddr_in socket_Address;
+    int option = 1;
+    int address_Length = sizeof(socket_Address);
 
     // Creating socket file descriptor
     if ((server_file_desc = socket(AF_INET, SOCK_STREAM, 0)) == 0)
@@ -24,6 +23,7 @@ int result;
     socket_Address.sin_family = AF_INET;
     socket_Address.sin_addr.s_addr = INADDR_ANY;
     socket_Address.sin_port = htons(PORT);
+
     // Forcefully attaching socket to the port 8080
     if (bind(server_file_desc, (struct sockaddr *)&socket_Address,
              sizeof(socket_Address)) < 0)
@@ -42,6 +42,8 @@ int result;
         perror("Connect is not Accepted.");
         exit(EXIT_FAILURE);
     }
-    return server_file_desc;
+
+    return new_socket;
 }
 
+////server.c

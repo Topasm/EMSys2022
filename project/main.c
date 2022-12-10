@@ -1,4 +1,5 @@
 // 최종 프로젝트 파일
+// 최종 프로젝트 파일
 #include "main.h"
 int sock = 0;
 int new_socket = 0;
@@ -13,10 +14,8 @@ typedef struct server2client
     int ball_x;
     int ball_y;
     int mari_x;
-    int mari_y;
     int maru_x;
-    int maru_y;
-    int score; // 기본 4 0 이면 1번 승 8면 2번승
+    int score;
 } s2c;
 
 s2c s2c2;
@@ -93,12 +92,14 @@ static void *Server_thread(void)
 // BGM start
 static void *Bgm_thread(void)
 {
+{
     // while문을 돌면서 음악 재생
 
     printf("buzzer on");
     buzzerInit();
     // buzzerPlaySong(2);
 
+    while (1)
     while (1)
     {
         //         buzzerPlaySong(2);
