@@ -1,4 +1,4 @@
-#include "client.h"
+#include "Client.h"
 
 void client_init()
 {

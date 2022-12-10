@@ -1,12 +1,35 @@
 //최종 프로젝트 파일
 #include "main.h"
 
+static pthread_t ServerTh_id;
+
 void PE_init()
 {
     ball = generate_ball(60.0, 0.0);
     // mari_obj = generate_character(10, 300);
     // maru_obj = generate_character(20, 10);
 }
+
+
+
+static void *Server_thread(void)
+{
+    // while(1){을 돌면서 / read(); / msgsnd(); }
+    server_init();
+    char buffers[100];
+
+    // Reading the Message sent from Server
+    value_Read = read(new_socket, buffers, 100);
+    // printf ("Message from Client: %s \n", buffer); //버퍼에 클라이언트 메세지 쓰여있음
+    while (1)
+    {
+        printf("Message from Client: %s \n", buffers); //버퍼에 클라이언트 메세지 쓰여있음
+
+        send(new_socket, strCmd, strlen(strCmd), 0);
+        printf("Message from Server is Sent to client\n");
+    } // closing the connected socket
+}
+
 
 int main(int argc, char **argv)
 {
@@ -26,7 +49,8 @@ int main(int argc, char **argv)
     fb_clear();
     png_init();
     PE_init();
-    // server_init();
+    pthread_create(&ServerTh_id,NULL, Server_thread,NULL);
+    
     // client_init();
     // int i = 0;
     dispaly_menu();
@@ -166,16 +190,7 @@ int main(int argc, char **argv)
     //         }
     //     }
 
-    // // Reading the Message sent from Server
-    // value_Read = read(new_socket, buffers, 100);
-    // // printf ("Message from Client: %s \n", buffer); //버퍼에 클라이언트 메세지 쓰여있음
-    // while (1)
-    // {
-    //     printf("Message from Client: %s \n", buffers); //버퍼에 클라이언트 메세지 쓰여있음
 
-    //     send(new_socket, strCmd, strlen(strCmd), 0);
-    //     printf("Message from Server is Sent to client\n");
-    // } // closing the connected socket
 
     while (1)
     {
@@ -215,3 +230,6 @@ int main(int argc, char **argv)
     close(client_file_descriptor);
     return 0;
 }
+
+
+

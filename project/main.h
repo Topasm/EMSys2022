@@ -18,6 +18,8 @@
 #include "device/libs/gyro.h"
 #include "device/Server.h"
 #include "device/Client.h"
+
+
 object *ball;
 object *mari_obj;
 object *maru_obj;
