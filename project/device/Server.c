@@ -1,6 +1,6 @@
 #include "Server.h"
 
-void server_init()
+int server_init()
 {
     
 struct sockaddr_in socket_Address;
@@ -42,5 +42,6 @@ int result;
         perror("Connect is not Accepted.");
         exit(EXIT_FAILURE);
     }
+    return server_file_desc;
 }
 

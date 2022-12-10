@@ -9,4 +9,4 @@
 
 int server_file_desc, new_socket, value_Read;
 char strCmd[100];
-void server_init();
+int server_init();
