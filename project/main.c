@@ -9,17 +9,6 @@ static pthread_t ServerTh_id;
 static pthread_t BgmTh_id;
 static pthread_t rcv_thread;
 
-typedef struct server2client
-{
-    int ball_x;
-    int ball_y;
-    int mari_x;
-    int maru_x;
-    int score;
-} s2c;
-
-s2c s2c2;
-
 typedef struct client2server
 {
     int whichChar; // 어떤 캐릭터 선택
@@ -27,6 +16,7 @@ typedef struct client2server
 } c2s;
 
 c2s c2s2;
+c2s c2s3;
 
 void PE_init()
 {
@@ -46,20 +36,11 @@ static void *ClientThFunc(void)
     {
         // value_Read = read(sock, strCmd, 100);
 
-        value_Read = recv(sock, (struct server2client *)&s2c2, sizeof(s2c2), 0);
-        if (value_Read < 0)
-        {
-            // printf("error");
-        }
-        else
-        {
-            printf("%d \n", s2c2.ball_x);
-            printf("%d \n", s2c2.ball_y);
-            printf("%d \n", s2c2.mari_x);
-            printf("%d \n", s2c2.maru_x);
-            printf("%d \n", s2c2.score);
-        }
         send(sock, (struct client2server *)&c2s2, sizeof(c2s2), 0);
+        //
+        printf("%d", c2s2.gyrodata);
+        usleep(10000);
+        
     }
 }
 
@@ -74,7 +55,6 @@ static void *Server_thread(void)
 
     while (1)
     {
-        send(new_socket, (struct server2client *)&s2c2, sizeof(s2c2), 0);
         value_Read = recv(new_socket, (struct client2server *)&c2s2, sizeof(c2s2), 0);
         // printf("Message from Client: %s \n", buffers); // 버퍼에 클라이언트 메세지 쓰여있음
         if (value_Read > 0)
@@ -97,13 +77,11 @@ static void *Bgm_thread(void)
     // buzzerPlaySong(2);
 
     while (1)
-    while (1)
     {
         //         buzzerPlaySong(2);
         // usleep(200000);
         buzzerStopSong();
         // usleep(200000);
-
         // usleep(200000);
     }
 }
@@ -151,30 +129,30 @@ int main(int argc, char **argv)
 
         // calculateG(ball, 0.8);
 
-        // //  int contact1 = CheckCollisionAnB(ball, mari_obj);
-        // //  if (contact1 == 1)
-        // //  {
-        // //      CheckImpulseAnB(ball, mari_obj);
-        // //      contact1 = 0;
-        // //  }
-        // //  int contact2 = CheckCollisionAnB(ball, mari_obj);
-        // //  if (contact2 == 1)
-        // //  {
-        // //      CheckImpulseAnB(ball, maru_obj);
-        // //      contact2 = 0;
+        //  int contact1 = CheckCollisionAnB(ball, mari_obj);
+        //  if (contact1 == 1)
+        //  {
+        //      CheckImpulseAnB(ball, mari_obj);
+        //      contact1 = 0;
+        //  }
+        //  int contact2 = CheckCollisionAnB(ball, mari_obj);
+        //  if (contact2 == 1)
+        //  {
+        //      CheckImpulseAnB(ball, maru_obj);
+        //      contact2 = 0;
 
-        // //  }
+        //  }
         // ContactGround(ball, 1);
         // calculateP(ball);
         // calculateP(mari_obj);
         // calculateP(maru_obj);
         // update_background();
-        // // printf("%d\n", (int)(ball->pos.y/1));
+        // printf("%d\n", ball->pos.y/1);
         // //  update_ball((int)ball->pos.x, (int)ball->pos.y);
         // //  update_mari((int)mari_obj->pos.x, (int)mari_obj->pos.y);
-        // //  update_maru((int)maru_obj->pos.x, (int)maru_obj->pos.y);
+        // update_maru((int)maru_obj->pos.x, (int)maru_obj->pos.y);
 
-        // update_screen();
+        //update_screen();
         c2s2.gyrodata = mari_obj->vel.x;
 
         // printf("ball pose x = %f y = %f contact = %d\n", ball->pos.x, ball->pos.y, contact);
