@@ -26,6 +26,8 @@ char buffers[100];
 static pthread_t ServerTh_id;
 >>>>>>> 0e3e9c52645ea18aca54da29c15f0d4ffd35444e
 
+static pthread_t BgmTh_id;
+
 void PE_init()
 {
     ball = generate_ball(60.0, 0.0);
@@ -70,7 +72,58 @@ static void *Server_thread(void)
     } // closing the connected socket
 }
 
+// BGM start
+static void *Bgm_thread(void)
+{   
+    // while문을 돌면서 음악 재생
+    buzzerInit();
 
+    while(1)BgmTh_id;
+    {
+    buzzerPlaySong(2);
+    usleep(200000);
+    buzzerStopSong();
+    usleep(200000);
+    buzzerPlaySong(1);
+    usleep(200000);
+    buzzerStopSong();
+    usleep(200000);
+    buzzerPlaySong(0);
+    usleep(200000);
+    buzzerStopSong();
+    usleep(200000);
+    buzzerPlaySong(1);
+    usleep(200000);
+    buzzerStopSong();
+    usleep(400000);
+
+    buzzerPlaySong(2);
+    usleep(200000);
+    buzzerStopSong();
+    usleep(200000);
+    buzzerPlaySong(2);
+    usleep(200000);
+    buzzerStopSong();
+    usleep(200000);
+    buzzerPlaySong(2);
+    usleep(200000);
+    buzzerStopSong();
+    usleep(400000);
+
+    buzzerPlaySong(1);
+    usleep(200000);
+    buzzerStopSong();
+    usleep(200000);
+    buzzerPlaySong(1);
+    usleep(200000);
+    buzzerStopSong();
+    usleep(200000);
+    buzzerPlaySong(1);
+    usleep(200000);
+    buzzerStopSong();
+    usleep(400000);
+    return 0;
+}
 
 
 
@@ -98,6 +151,8 @@ int main(int argc, char **argv)
     // int i = 0;
     pthread_create(&ServerTh_id,NULL, Server_thread,NULL);
     
+    pthread_create(&BgmTh_id,NULL, Server_thread,NULL);
+
     // client_init();
     // int i = 0;
     dispaly_menu();

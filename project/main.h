@@ -19,6 +19,7 @@
 #include "device/libs/gyro.h"
 #include "device/Server.h"
 #include "device/Client.h"
+#include "device/libs/buzzer.h"
 
 
 object *ball;
