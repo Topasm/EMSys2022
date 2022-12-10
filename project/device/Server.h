@@ -7,6 +7,6 @@
 #define PORT 8080
 
 
-int server_file_desc, new_socket, value_Read;
-char strCmd[100];
+int server_file_desc, value_Read;
+
 int server_init();
