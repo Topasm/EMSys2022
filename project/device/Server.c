@@ -6,7 +6,7 @@ int server_init()
 struct sockaddr_in socket_Address;
 int option = 1;
 int address_Length = sizeof(socket_Address);
-int result;
+
 
     // Creating socket file descriptor
     if ((server_file_desc = socket(AF_INET, SOCK_STREAM, 0)) == 0)
@@ -42,6 +42,6 @@ int result;
         perror("Connect is not Accepted.");
         exit(EXIT_FAILURE);
     }
-    return server_file_desc;
+    return new_socket;
 }
 

@@ -2,14 +2,15 @@
 
 int client_init()
 {
+    char servip[100];
+
     int sock = 0;
     struct sockaddr_in server_address;
     // char *message = "클라이언트에서 보내는 x, y좌표"; //서버로 보내는 메세지
-    
 
-    int result;
+    // int result;
     // sprintf(strCmd, "./gyroTest '%d, %d, %d'", gyro[0], gyro[1], gyro[2]);
-    result = system(strCmd); //문자열 그대로 실행시키는 함수
+    // result = system(strCmd); //문자열 그대로 실행시키는 함수
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         printf("In Error while creation of Socket \n");
@@ -18,9 +19,14 @@ int client_init()
 
     server_address.sin_family = AF_INET;
     server_address.sin_port = htons(PORT);
+    server_address.sin_addr.s_addr = inet_addr(servip);
+    recv(sock, servip, strlen(servip), 0);
 
+  
+ 
     // Converting the IPv4 and IPv6 addresses from text to binary format
-    if (inet_pton(AF_INET, "192.168.108.15", &server_address.sin_addr) <= 0)
+    
+    if (inet_pton(AF_INET, "192.168.221.15", &server_address.sin_addr) <= 0)
     {
         printf("\nInvalid server address/ Address not found \n");
         return -1;

@@ -1,17 +1,17 @@
-//최종 프로젝트 파일
+// 최종 프로젝트 파일
 #include "main.h"
 int sock = 0;
 int new_socket = 0;
-char ipaddress[100];
+char servip[100];
 
 static pthread_t ServerTh_id;
 static pthread_t BgmTh_id;
 static pthread_t rcv_thread;
 
-void get_ip()
-{
-    //아이피 입력하는 부분
-}
+// void get_ip()
+// {
+//     scanf
+// }
 
 typedef struct server2client
 {
@@ -21,7 +21,7 @@ typedef struct server2client
     int mari_y;
     int maru_x;
     int maru_y;
-    int score; //기본 4 0 이면 1번 승 8면 2번승
+    int score; // 기본 4 0 이면 1번 승 8면 2번승
 } s2c;
 
 s2c s2c2;
@@ -33,7 +33,6 @@ typedef struct client2server
 } c2s;
 
 c2s c2s2;
-
 
 void PE_init()
 {
@@ -52,7 +51,7 @@ static void *ClientThFunc(void)
     {
         // value_Read = read(sock, strCmd, 100);
 
-        value_Read = recv(new_socket, (struct server2client*)&s2c2, sizeof(s2c2), 0);
+        value_Read = recv(new_socket, (struct server2client *)&s2c2, sizeof(s2c2), 0);
         printf("%d \n", s2c2.ball_x);
         printf("%d \n", s2c2.ball_y);
         printf("%d \n", s2c2.mari_x);
@@ -60,10 +59,9 @@ static void *ClientThFunc(void)
         printf("%d \n", s2c2.maru_x);
         printf("%d \n", s2c2.maru_y);
         printf("%d \n", s2c2.score);
-        send(sock, (struct client2server*)&c2s2, sizeof(c2s2), 0);
+        send(sock, (struct client2server *)&c2s2, sizeof(c2s2), 0);
     }
 }
-
 
 static void *Server_thread(void)
 {
@@ -72,8 +70,8 @@ static void *Server_thread(void)
 
     while (1)
     {
-        send(new_socket, (struct server2client*)&s2c2, sizeof(s2c2), 0);
-        value_Read = recv(sock, (struct client2server*)&c2s2, sizeof(c2s2), 0);
+        send(new_socket, (struct server2client *)&s2c2, sizeof(s2c2), 0);
+        value_Read = recv(sock, (struct client2server *)&c2s2, sizeof(c2s2), 0);
         // printf("Message from Client: %s \n", buffers); // 버퍼에 클라이언트 메세지 쓰여있음
 
         printf("%d \n", c2s2.whichChar);
@@ -83,65 +81,60 @@ static void *Server_thread(void)
     } // closing the connected socket
 }
 
-
 // BGM start
 static void *Bgm_thread(void)
-{   
+{
     // while문을 돌면서 음악 재생
 
     printf("buzzer on");
     buzzerInit();
 
-    while(1)
+    while (1)
     {
-    buzzerPlaySong(2);
-    usleep(200000);
-    buzzerStopSong();
-    usleep(200000);
-    buzzerPlaySong(1);
-    usleep(200000);
-    buzzerStopSong();
-    usleep(200000);
-    buzzerPlaySong(0);
-    usleep(200000);
-    buzzerStopSong();
-    usleep(200000);
-    buzzerPlaySong(1);
-    usleep(200000);
-    buzzerStopSong();
-    usleep(400000);
+        buzzerPlaySong(2);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(200000);
+        buzzerPlaySong(1);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(200000);
+        buzzerPlaySong(0);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(200000);
+        buzzerPlaySong(1);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(400000);
 
-    buzzerPlaySong(2);
-    usleep(200000);
-    buzzerStopSong();
-    usleep(200000);
-    buzzerPlaySong(2);
-    usleep(200000);
-    buzzerStopSong();
-    usleep(200000);
-    buzzerPlaySong(2);
-    usleep(200000);
-    buzzerStopSong();
-    usleep(400000);
+        buzzerPlaySong(2);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(200000);
+        buzzerPlaySong(2);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(200000);
+        buzzerPlaySong(2);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(400000);
 
-    buzzerPlaySong(1);
-    usleep(200000);
-    buzzerStopSong();
-    usleep(200000);
-    buzzerPlaySong(1);
-    usleep(200000);
-    buzzerStopSong();
-    usleep(200000);
-    buzzerPlaySong(1);
-    usleep(200000);
-    buzzerStopSong();
-    usleep(400000);
-    
+        buzzerPlaySong(1);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(200000);
+        buzzerPlaySong(1);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(200000);
+        buzzerPlaySong(1);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(400000);
     }
-    
 }
-
-
 
 int main(int argc, char **argv)
 {
@@ -151,6 +144,13 @@ int main(int argc, char **argv)
     int bits_per_pixel;
     int line_length;
 
+    argv[1] = servip[100];
+    printf("write your ip : ");
+    scanf("%s", servip[100]);
+
+    send(sock, servip, strlen(servip), 0);
+
+    // servip client로 메세지 send
     /*FrameBuffer init*/
     if (fb_init(&screen_width, &screen_height, &bits_per_pixel, &line_length) < 0)
     {
@@ -161,13 +161,11 @@ int main(int argc, char **argv)
     fb_clear();
     png_init();
     PE_init();
-    
-    pthread_create(&BgmTh_id,NULL, Bgm_thread,NULL);
-    pthread_create(&rcv_thread, NULL, ClientThFunc, (void *)&sock);
-    pthread_create(&ServerTh_id,NULL, Server_thread,NULL);
-    
 
-    
+    pthread_create(&BgmTh_id, NULL, Bgm_thread, NULL);
+    pthread_create(&rcv_thread, NULL, ClientThFunc, (void *)&sock);
+    pthread_create(&ServerTh_id, NULL, Server_thread, NULL);
+
     dispaly_menu();
 
     while (1)
