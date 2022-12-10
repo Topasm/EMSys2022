@@ -11,7 +11,7 @@
         int recievedVal = 0;
         PLAYER=0;
         buttonMsg.keyInput=0;
-        
+        printf("select_player 들어옴\n");
         while (1)
         {
             recievedVal = msgrcv(msgID, &buttonMsg, sizeof(buttonMsg) - 4, 0, 0);

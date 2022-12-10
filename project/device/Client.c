@@ -2,7 +2,7 @@
 
 int client_init()
 {
-    char servip[100];
+    char servip[30] = {0};
 
     int sock = 0;
     struct sockaddr_in server_address;
@@ -19,18 +19,26 @@ int client_init()
 
     server_address.sin_family = AF_INET;
     server_address.sin_port = htons(PORT);
-    server_address.sin_addr.s_addr = inet_addr(servip);
+
     recv(sock, servip, strlen(servip), 0);
 
-  
- 
+    // server_address.sin_addr.s_addr = inet_addr(servip);
+    server_address.sin_addr.s_addr = servip;
+
     // Converting the IPv4 and IPv6 addresses from text to binary format
-    
-    if (inet_pton(AF_INET, "192.168.221.15", &server_address.sin_addr) <= 0)
+
+    //       if (server_address.sin_addr.s_addr != INADDR_ANY)
+    // {
+    //     printf("\nInvalid server address/ Address not found \n");
+    //     return -1;
+    // }
+
+    if (inet_pton(AF_INET, servip, &server_address.sin_addr) <= 0)
     {
         printf("\nInvalid server address/ Address not found \n");
         return -1;
     }
+
     // Going to connet to the socket server using connect method
     if ((client_file_descriptor = connect(sock, (struct sockaddr *)&server_address, sizeof(server_address))) < 0)
     {
