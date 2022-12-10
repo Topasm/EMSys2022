@@ -19,7 +19,12 @@
 #include "device/libs/led.h"
 #include "device/libs/gyro.h"
 #include "frontend/display/select_player_btn.h"
+<<<<<<< HEAD
+#include "device/libs/textlcd.h"
+pthread_t th1, th2;
+=======
 pthread_t thmove, thled;
+>>>>>>> 01fbbe33c5ff4890b4d08ecd1b00f4a9ad4b9dd5
 pthread_mutex_t lock;
 
 
@@ -73,6 +78,27 @@ int main(int argc, char **argv)
 	return 0;
 }
 
+<<<<<<< HEAD
+unsigned int linenum = 0;
+stTextLCD stlcd;
+
+static pthread_t textlcdTh_id;
+
+int textlcd_Init(int linenum, char *str){
+  
+	const char* str1 = "player Win!";
+	const char* str2 = "You are Winner!";
+	txtlcd_Init();
+	lcdtextwrite(str1, str2,1);
+	sleep(1);
+	lcdtextwrite(str1, str2,2);
+	txtlcd_off();
+	txtlcd_Init();
+	sleep(1);
+	lcdtextwrite(str1, str2,0);
+}
+=======
 
 
 
+>>>>>>> 01fbbe33c5ff4890b4d08ecd1b00f4a9ad4b9dd5

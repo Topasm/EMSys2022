@@ -20,6 +20,8 @@
 #include "device/Server.h"
 #include "device/Client.h"
 #include "device/libs/buzzer.h"
+#include "frontend/display/select_player_btn.h"
+#include "device/libs/led.h"
 
 
 object *ball;

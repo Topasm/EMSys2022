@@ -1,6 +1,6 @@
 #include "Client.h"
 
-int client_init()
+int client_init(char *servip)
 {
     char servip[30] = {0};
 
@@ -20,18 +20,12 @@ int client_init()
     server_address.sin_family = AF_INET;
     server_address.sin_port = htons(PORT);
 
-    recv(sock, servip, strlen(servip), 0);
 
-    // server_address.sin_addr.s_addr = inet_addr(servip);
-    server_address.sin_addr.s_addr = servip;
-
+    // recv(sock, servip, strlen(servip), 0);
+    // // server_address.sin_addr.s_addr = inet_addr(servip);
+    // server_address.sin_addr.s_addr = servip[30];
+  
     // Converting the IPv4 and IPv6 addresses from text to binary format
-
-    //       if (server_address.sin_addr.s_addr != INADDR_ANY)
-    // {
-    //     printf("\nInvalid server address/ Address not found \n");
-    //     return -1;
-    // }
 
     if (inet_pton(AF_INET, servip, &server_address.sin_addr) <= 0)
     {
@@ -45,5 +39,9 @@ int client_init()
         printf("\nConnection Failed with the server \n");
         return -1;
     }
+
+    // Going to connet to the socket server using connect method
+    
     return sock;
 }
+
