@@ -4,10 +4,15 @@
 int sock = 0;
 int new_socket = 0;
 char servip[30] = {0};
+int score = 4;
+int count = 0;
+int currentCount = 1;
+int Gcontact = 0;
 
 static pthread_t ServerTh_id;
 static pthread_t BgmTh_id;
 static pthread_t rcv_thread;
+static pthread_t thled;
 
 typedef struct client2server
 {
@@ -21,8 +26,8 @@ c2s c2s3;
 void PE_init()
 {
     ball = generate_ball(120, 10);
-   mari_obj = generate_character(120, 200);
-   maru_obj = generate_character(700, 200);
+    mari_obj = generate_character(120, 200);
+    maru_obj = generate_character(720, 200);
 }
 static void *ClientThFunc(void)
 {
@@ -40,7 +45,6 @@ static void *ClientThFunc(void)
         //
         printf("%d", c2s2.gyrodata);
         usleep(10000);
-        
     }
 }
 
@@ -65,6 +69,12 @@ static void *Server_thread(void)
 
         // printf("Message from Server is Sent to client\n");
     } // closing the connected socket
+}
+
+void *ledth(void)
+{
+    led(score);
+   
 }
 
 // BGM start
@@ -120,57 +130,66 @@ int main(int argc, char **argv)
     // {
     //     pthread_create(&ServerTh_id, NULL, Server_thread, NULL);
     // }
+    pthread_create(&thled, NULL, ledth, NULL);
 
-    
     // 211.15
 
     while (1)
     {
-       mari_obj->vel.x = -2*get_dx();
+        mari_obj->vel.x = -2 * get_dx();
 
         calculateG(ball, 0.8);
 
-         int contact1 = CheckCollisionAnB(ball, mari_obj);
-         if (contact1 == 1)
-         {
-             CheckImpulseAnB(ball, mari_obj);
-             contact1 = 0;
-         }
-         int contact2 = CheckCollisionAnB(ball, maru_obj);
-         if (contact2 == 1)
-         {
-             CheckImpulseAnB(ball, maru_obj);
-             contact2 = 0;
-
-         }
-        
-        ContactGround(ball, 1);
+        int contact1 = CheckCollisionAnB(ball, mari_obj);
+        if (contact1 == 1)
+        {
+            CheckImpulseAnB(ball, mari_obj);
+            contact1 = 0;
+        }
+        int contact2 = CheckCollisionAnB(ball, maru_obj);
+        if (contact2 == 1)
+        {
+            CheckImpulseAnB(ball, maru_obj);
+            contact2 = 0;
+        }
+        Gcontact=ContactGround(ball, 1);
+        if(Gcontact>512)
+        {
+            count = 0;
+            score ++;
+            printf("contaced");
+             printf("the score is %d",score);
+        }
+        else if(Gcontact>0 && Gcontact <512)
+        {   count = 0;
+            score --;
+            printf("contaced");
+             printf("the score is %d",score);
+        }
         calculateP(ball);
         calculateP(mari_obj);
         calculateP(maru_obj);
-        
+
         CharContactEdge(mari_obj, maru_obj);
         ballContactEdge(ball);
         update_background();
         printf("%f\n", ball->pos.y);
         update_ball((int)ball->pos.x, (int)ball->pos.y);
-        
+
         update_mari((int)mari_obj->pos.x, (int)mari_obj->pos.y);
         update_maru((int)maru_obj->pos.x, (int)maru_obj->pos.y);
-      
 
         update_screen();
         c2s2.gyrodata = mari_obj->vel.x;
 
-        // printf("ball pose x = %f y = %f contact = %d\n", ball->pos.x, ball->pos.y, contact);
-        // printf("---mari_obj pose x = %f y = %f contact = %d\n", mari_obj->pos.x, mari_obj->pos.y, contact);
     }
 
-    fb_close();
-    // closing the listening socket
-    shutdown(new_socket, SHUT_RDWR);
+        fb_close();
+        // closing the listening socket
+        shutdown(new_socket, SHUT_RDWR);
 
-    close(sock);
-    close(new_socket);
-    return 0;
+        close(sock);
+        close(new_socket);
+        return 0;
+    
 }

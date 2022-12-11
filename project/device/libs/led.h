@@ -11,15 +11,17 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-
+#include "../../frontend/display/move_left.h"
 
 #define LED_DRIVER_NAME "/dev/periled"
 #define ON 1
 #define OFF 0
 
+
 int ledLibInit(void);
 int ledOnOff(int ledNum, int onOff);
 int ledLibStatus(void);
 int ledLibExit(void);
+void led(int);
 #endif _LED_H_
 

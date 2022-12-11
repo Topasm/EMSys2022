@@ -1,6 +1,6 @@
 CC=arm-linux-gnueabi-gcc
 AR=arm-linux-gnueabi-ar
-LIBRARY_DIR := frontend device backend
+LIBRARY_DIR := frontend device backend device/libs
 
 
 all: mju_baegu2.out

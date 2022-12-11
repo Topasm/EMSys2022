@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include "PEobject.h"
 
-#define STRUCT_ZERO(T) ((T){0})
-
 void calculateG(object *mass, float gravity)
 {
     mass->vel.y += gravity;
@@ -41,7 +39,7 @@ void calculateP(object *mass)
     // return mass->pos.y;
 }
 
-void ContactGround(object *a, float elastic)
+int ContactGround(object *a, float elastic)
 {
     if (a->pos.y > 350)
     {
@@ -52,12 +50,11 @@ void ContactGround(object *a, float elastic)
         }
         a->vel.y *= -elastic;
         printf("contact Ground%f", a->pos.x);
+        return (int)a->pos.x;
+     
     }
-    // else
-    // {
-    //     a->vel.y = 0;
-    //     a->pos.y = 400;
-    // }
+    return -1;
+    
 }
 
 // player 변수

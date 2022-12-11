@@ -19,12 +19,8 @@
 #include "device/libs/led.h"
 #include "device/libs/gyro.h"
 #include "frontend/display/select_player_btn.h"
-<<<<<<< HEAD
 #include "device/libs/textlcd.h"
 pthread_t th1, th2;
-=======
-pthread_t thmove, thled;
->>>>>>> 01fbbe33c5ff4890b4d08ecd1b00f4a9ad4b9dd5
 pthread_mutex_t lock;
 
 
@@ -34,10 +30,6 @@ void* moveth(void* arg)
 	move_left();
 }
 
-void* ledth (void)
-{
-	led();
-}
 
 
 //===============================================================================================================

@@ -19,14 +19,9 @@ int CheckCollisionAnB(object* a, object* b)
 int CheckImpulseAnB(object* a, object* b)
 {
     float mass1 = 2;
-    // float mass2 = 0.01;
-    int state = 0;
-    
-    a->vel.x = mass1*b->vel.x;
+
+    a->vel.x = mass1*b->vel.x - 0.1;
     a->vel.y = -a->vel.y;
-
-
-   
 
     printf("objec collide\n%f",a->vel.y);
     

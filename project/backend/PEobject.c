@@ -10,8 +10,8 @@ object* generate_ball(float x, float y)
     ball->pos.x = x;
     ball->pos.y = y;
     ball->inv_mass = 0.6;
-    ball->size.x = 50;
-    ball->size.y = 50;
+    ball->size.x = 80;
+    ball->size.y = 80;
     
     return (object*)ball;
 }
