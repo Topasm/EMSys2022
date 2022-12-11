@@ -20,9 +20,9 @@ c2s c2s3;
 
 void PE_init()
 {
-    ball = generate_ball(120, 0.0);
-    mari_obj = generate_character(120, 200);
-    maru_obj = generate_character(700, 200);
+    ball = generate_ball(120, 10);
+   mari_obj = generate_character(120, 200);
+   maru_obj = generate_character(700, 200);
 }
 static void *ClientThFunc(void)
 {
@@ -104,55 +104,62 @@ int main(int argc, char **argv)
     fb_clear();
     png_init();
     PE_init();
-    pthread_create(&BgmTh_id, NULL, Bgm_thread, NULL);
-    c2s2.whichChar = select_player();
-    if (c2s2.whichChar == 1)
-    {
+    // pthread_create(&BgmTh_id, NULL, Bgm_thread, NULL);
+    // dispaly_menu();
+    // c2s2.whichChar = select_player();
+    // if (c2s2.whichChar == 1)
+    // {
 
-        printf("write your ip : ");
-        scanf("%s", servip);
-        printf("%s\n", servip);
+    //     printf("write your ip : ");
+    //     scanf("%s", servip);
+    //     printf("%s\n", servip);
 
-        pthread_create(&rcv_thread, NULL, ClientThFunc, (void *)&sock);
-    }
-    else if (c2s2.whichChar == 2)
-    {
-        pthread_create(&ServerTh_id, NULL, Server_thread, NULL);
-    }
+    //     pthread_create(&rcv_thread, NULL, ClientThFunc, (void *)&sock);
+    // }
+    // else if (c2s2.whichChar == 2)
+    // {
+    //     pthread_create(&ServerTh_id, NULL, Server_thread, NULL);
+    // }
 
-    dispaly_menu();
+    
     // 211.15
 
     while (1)
     {
-        mari_obj->vel.x = get_dx();
+       mari_obj->vel.x = -2*get_dx();
 
-        // calculateG(ball, 0.8);
+        calculateG(ball, 0.8);
 
-        //  int contact1 = CheckCollisionAnB(ball, mari_obj);
-        //  if (contact1 == 1)
-        //  {
-        //      CheckImpulseAnB(ball, mari_obj);
-        //      contact1 = 0;
-        //  }
-        //  int contact2 = CheckCollisionAnB(ball, mari_obj);
-        //  if (contact2 == 1)
-        //  {
-        //      CheckImpulseAnB(ball, maru_obj);
-        //      contact2 = 0;
+         int contact1 = CheckCollisionAnB(ball, mari_obj);
+         if (contact1 == 1)
+         {
+             CheckImpulseAnB(ball, mari_obj);
+             contact1 = 0;
+         }
+         int contact2 = CheckCollisionAnB(ball, maru_obj);
+         if (contact2 == 1)
+         {
+             CheckImpulseAnB(ball, maru_obj);
+             contact2 = 0;
 
-        //  }
-        // ContactGround(ball, 1);
-        // calculateP(ball);
-        // calculateP(mari_obj);
-        // calculateP(maru_obj);
-        // update_background();
-        // printf("%d\n", ball->pos.y/1);
-        // //  update_ball((int)ball->pos.x, (int)ball->pos.y);
-        // //  update_mari((int)mari_obj->pos.x, (int)mari_obj->pos.y);
-        // update_maru((int)maru_obj->pos.x, (int)maru_obj->pos.y);
+         }
+        
+        ContactGround(ball, 1);
+        calculateP(ball);
+        calculateP(mari_obj);
+        calculateP(maru_obj);
+        
+        CharContactEdge(mari_obj, maru_obj);
+        ballContactEdge(ball);
+        update_background();
+        printf("%f\n", ball->pos.y);
+        update_ball((int)ball->pos.x, (int)ball->pos.y);
+        
+        update_mari((int)mari_obj->pos.x, (int)mari_obj->pos.y);
+        update_maru((int)maru_obj->pos.x, (int)maru_obj->pos.y);
+      
 
-        //update_screen();
+        update_screen();
         c2s2.gyrodata = mari_obj->vel.x;
 
         // printf("ball pose x = %f y = %f contact = %d\n", ball->pos.x, ball->pos.y, contact);

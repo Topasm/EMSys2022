@@ -8,16 +8,37 @@
 
 void calculateG(object *mass, float gravity)
 {
-    mass->acc.y = gravity;
     mass->vel.y += gravity;
 }
 
 void calculateP(object *mass)
 {
-    
-    mass->pos.y += mass->vel.y;
-    mass->pos.x += mass->vel.x;
-    //return mass->pos.y;
+
+    if (mass->vel.y * mass->vel.y < 9 && mass->vel.x * mass->vel.x < 9)
+    {
+        mass->pos.y += mass->vel.y;
+        mass->pos.x += mass->vel.x;
+    }
+    else
+    {
+        if (mass->vel.y > 0)
+        {
+            mass->pos.y += 3;
+        }
+        if (mass->vel.y < 0)
+        {
+            mass->pos.y -= 3;
+        }
+        if(mass->vel.x>0)
+        {
+            mass->pos.x += 3;
+        }
+        if(mass->vel.x<0)
+        {
+            mass->pos.x -= 3;
+        }
+    }
+    // return mass->pos.y;
 }
 
 void ContactGround(object *a, float elastic)
@@ -30,7 +51,7 @@ void ContactGround(object *a, float elastic)
             a->pos.y = 350;
         }
         a->vel.y *= -elastic;
-        printf("contact%f", a->vel.y);
+        printf("contact Ground%f", a->pos.x);
     }
     // else
     // {
@@ -50,7 +71,7 @@ void CharContactEdge(object *a, object *b)
     {
         printf("mari saturation\n");
         a->vel.x = 0;
-        a->pos.x = 295;
+        a->pos.x = 240;
     }
 
     else if (a->pos.x <= 0) // not to over left wall
@@ -58,14 +79,13 @@ void CharContactEdge(object *a, object *b)
         printf("mari saturation\n");
         a->vel.x = 0;
         a->pos.x = 0;
-        ;
     }
     // maru
     if (b->pos.x <= 520) // not to over net
     {
         printf("maru saturation\n");
         b->vel.x = 0;
-        b->pos.x = 620;
+        b->pos.x = 520;
     }
 
     else if (b->pos.x >= 830) // not to over right wall
@@ -79,16 +99,22 @@ void CharContactEdge(object *a, object *b)
 void ballContactEdge(object *ball)
 {
 
-    if (ball->pos.x <= 0) // not to over left wall
+    if (ball->pos.x <= 1) // not to over left wall
     {
         printf("mari saturation\n");
         ball->vel.x *= -1;
     }
 
-    if (ball->pos.x >= 830) // not to over right wall
+    if (ball->pos.x >= 850) // not to over right wall
     {
         printf("maru saturation\n");
         ball->vel.x *= -1;
+    }
+    
+    if (ball->pos.y <= 5) // not to over right wall
+    {
+        printf("maru saturation\n");
+        ball->vel.y *= -1;
     }
 }
 

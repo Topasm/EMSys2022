@@ -22,8 +22,9 @@ int CheckImpulseAnB(object* a, object* b)
     // float mass2 = 0.01;
     int state = 0;
     
-    a->vel.x = -mass1*a->vel.x;
-    a->vel.y = -mass1*a->vel.y;
+    a->vel.x = mass1*b->vel.x;
+    a->vel.y = -a->vel.y;
+
 
    
 

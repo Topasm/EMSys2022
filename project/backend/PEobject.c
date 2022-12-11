@@ -26,8 +26,8 @@ object* generate_character(float x, float y)
     character->vel.y = 0;
    
     character->inv_mass = 0.1;
-    character->size.x = 50;
-    character->size.y = 100;
+    character->size.x = 150;
+    character->size.y = 200;
     
     return (object*)character;
 }

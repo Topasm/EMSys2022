@@ -78,7 +78,6 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-<<<<<<< HEAD
 unsigned int linenum = 0;
 stTextLCD stlcd;
 
@@ -97,8 +96,3 @@ int textlcd_Init(int linenum, char *str){
 	sleep(1);
 	lcdtextwrite(str1, str2,0);
 }
-=======
-
-
-
->>>>>>> 01fbbe33c5ff4890b4d08ecd1b00f4a9ad4b9dd5
