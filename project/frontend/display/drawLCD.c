@@ -12,6 +12,8 @@ char *mari_data;
 char *maru_data;
 char *menu_data;
 char *ball_data;
+char *win1_data;
+char *win2_data;
 
 unsigned int error;
 const char *bg_path = "./source/background.png";
@@ -19,12 +21,16 @@ const char *mari_path = "./source/mari_mirrored.png";
 const char *maru_path = "./source/marusmall.png"; //maru 로 변경 해야 함
 const char *menu_path = "./source/player.png";
 const char *ball_path = "./source/ball.png";
+const char *win1_path = "./source/win1.png";
+const char *win2_path = "./source/win2.png";
 
 int cols_bg = 0, rows_bg = 0;
 int cols_mari = 0, rows_mari = 0;
 int cols_maru = 0, rows_maru = 0;
 int cols_menu = 0, rows_menu = 0;
 int cols_ball = 0, rows_ball = 0;
+int cols_win1 = 0, rows_win1 = 0;
+int cols_win2 = 0, rows_win2 = 0;
 
 
 void png_init()
@@ -45,6 +51,13 @@ void png_init()
 	error = lodepng_decode32_file(&ball_data, &cols_ball, &rows_ball, ball_path);
 	if (error)
 		printf("error %u: %s\n", error, lodepng_error_text(error));
+	error = lodepng_decode32_file(&win1_data, &cols_win1, &rows_win1, win1_path);
+	if (error)
+		printf("error %u: %s\n", error, lodepng_error_text(error));
+	error = lodepng_decode32_file(&win2_data, &cols_win2, &rows_win2, win2_path);
+	if (error)
+		printf("error %u: %s\n", error, lodepng_error_text(error));
+		
 }
 
 void update_background(void)
@@ -66,6 +79,14 @@ void update_ball(int posx, int posy)
 void update_menu(void)
 {
 	picture_in_position(menu_data, cols_menu, rows_menu,0,0);
+}
+void update_win1(void)
+{
+	picture_in_position(win1_data,cols_win1, rows_win1,0,0);
+}
+void update_win2(void)
+{
+	picture_in_position(win2_data,cols_win2, rows_win2,0,0);
 }
 
 

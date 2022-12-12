@@ -19,7 +19,7 @@ FILE *fp = NULL;
     fscanf(fp,"%d, %d, %d",&gyro[0],&gyro[1],&gyro[2]);
     //printf ("Gyroscope x: %d\r\n",gyro[0]);
    /// printf ("Gyroscope y: %d\r\n",gyro[1]);
-    dx=gyro[1]/10;
+    dx=gyro[1];
     //printf ("Gyroscope z: %d\r\n",gyro[2]);
     //sleep(1);
     fclose(fp);

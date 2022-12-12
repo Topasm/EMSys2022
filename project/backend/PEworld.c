@@ -12,7 +12,7 @@ void calculateG(object *mass, float gravity)
 void calculateP(object *mass)
 {
 
-    if (mass->vel.y * mass->vel.y < 9 && mass->vel.x * mass->vel.x < 9)
+    if (mass->vel.y * mass->vel.y < 16 && mass->vel.x * mass->vel.x < 16)
     {
         mass->pos.y += mass->vel.y;
         mass->pos.x += mass->vel.x;
@@ -21,19 +21,19 @@ void calculateP(object *mass)
     {
         if (mass->vel.y > 0)
         {
-            mass->pos.y += 3;
+            mass->pos.y += 4;
         }
         if (mass->vel.y < 0)
         {
-            mass->pos.y -= 3;
+            mass->pos.y -= 4;
         }
         if(mass->vel.x>0)
         {
-            mass->pos.x += 3;
+            mass->pos.x += 4;
         }
         if(mass->vel.x<0)
         {
-            mass->pos.x -= 3;
+            mass->pos.x -= 4;
         }
     }
     // return mass->pos.y;

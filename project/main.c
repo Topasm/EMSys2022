@@ -1,11 +1,10 @@
 // 최종 프로젝트 파일
-// 최종 프로젝트 파일
 #include "main.h"
 int sock = 0;
 int new_socket = 0;
 char servip[30] = {0};
-int score = 4;
-int count = 0;
+int jumsu = 4;
+
 int currentCount = 1;
 int Gcontact = 0;
 
@@ -71,11 +70,6 @@ static void *Server_thread(void)
     } // closing the connected socket
 }
 
-void *ledth(void)
-{
-    led(score);
-   
-}
 
 // BGM start
 static void *Bgm_thread(void)
@@ -84,14 +78,12 @@ static void *Bgm_thread(void)
 
     printf("buzzer on");
     buzzerInit();
-    // buzzerPlaySong(2);
+    
 
     while (1)
     {
-        //         buzzerPlaySong(2);
-        // usleep(200000);
-        buzzerStopSong();
-        // usleep(200000);
+        buzzerPlaySong(8);
+  
         // usleep(200000);
     }
 }
@@ -111,26 +103,31 @@ int main(int argc, char **argv)
         return 0;
     }
     /*clear FB.*/
+    ledLibInit();
     fb_clear();
     png_init();
     PE_init();
-    // pthread_create(&BgmTh_id, NULL, Bgm_thread, NULL);
-    // dispaly_menu();
-    // c2s2.whichChar = select_player();
-    // if (c2s2.whichChar == 1)
-    // {
+    led(jumsu);
+    
+    dispaly_menu();
+    c2s2.whichChar = select_player();
+    if (c2s2.whichChar == 1)
+    {
 
-    //     printf("write your ip : ");
-    //     scanf("%s", servip);
-    //     printf("%s\n", servip);
+        printf("write your ip : ");
+        scanf("%s", servip);
+        printf("%s\n", servip);
 
-    //     pthread_create(&rcv_thread, NULL, ClientThFunc, (void *)&sock);
-    // }
-    // else if (c2s2.whichChar == 2)
-    // {
-    //     pthread_create(&ServerTh_id, NULL, Server_thread, NULL);
-    // }
-    pthread_create(&thled, NULL, ledth, NULL);
+        pthread_create(&rcv_thread, NULL, ClientThFunc, (void *)&sock);
+    }
+    else if (c2s2.whichChar == 2)
+    {
+        pthread_create(&ServerTh_id, NULL, Server_thread, NULL);
+    }
+    
+    pthread_create(&BgmTh_id, NULL, Bgm_thread, NULL);
+    
+
 
     // 211.15
 
@@ -152,19 +149,26 @@ int main(int argc, char **argv)
             CheckImpulseAnB(ball, maru_obj);
             contact2 = 0;
         }
-        Gcontact=ContactGround(ball, 1);
-        if(Gcontact>512)
+        Gcontact = ContactGround(ball, 1);
+        if (Gcontact > 0)
         {
-            count = 0;
-            score ++;
-            printf("contaced");
-             printf("the score is %d",score);
-        }
-        else if(Gcontact>0 && Gcontact <512)
-        {   count = 0;
-            score --;
-            printf("contaced");
-             printf("the score is %d",score);
+
+            if (Gcontact > 512)
+            {
+                
+                jumsu ++;
+                printf("contaced");
+                printf("the score is %d\n", (int)jumsu);
+                led(jumsu);
+            }
+            else if (Gcontact < 512)
+            {
+                
+                jumsu --;
+                printf("contaced");
+                printf("the score is %d\n", (int)jumsu);
+                led(jumsu);
+            }
         }
         calculateP(ball);
         calculateP(mari_obj);
@@ -173,23 +177,32 @@ int main(int argc, char **argv)
         CharContactEdge(mari_obj, maru_obj);
         ballContactEdge(ball);
         update_background();
-        printf("%f\n", ball->pos.y);
         update_ball((int)ball->pos.x, (int)ball->pos.y);
-
         update_mari((int)mari_obj->pos.x, (int)mari_obj->pos.y);
         update_maru((int)maru_obj->pos.x, (int)maru_obj->pos.y);
-
         update_screen();
+        if(jumsu ==5)
+        {
+            update_win1();
+            update_screen();
+            buzzerStopSong();
+            break;
+        }
+        if(jumsu == 3)
+        {
+            update_win2();
+            update_screen();
+            buzzerStopSong();
+            break;
+        }
         c2s2.gyrodata = mari_obj->vel.x;
-
     }
 
-        fb_close();
-        // closing the listening socket
-        shutdown(new_socket, SHUT_RDWR);
-
-        close(sock);
-        close(new_socket);
-        return 0;
-    
+    fb_close();
+    // closing the listening socket
+    shutdown(new_socket, SHUT_RDWR);
+    close(sock);
+    close(new_socket);
+    ledLibExit();
+    return 0;
 }
