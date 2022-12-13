@@ -210,7 +210,7 @@ int main(int argc, char **argv)
             if (Gcontact > 0)
             {
 
-                if (Gcontact > 512)
+                if (Gcontact > 420)
                 {
 
                     jumsu++;
@@ -218,7 +218,7 @@ int main(int argc, char **argv)
                     printf("the score is %d\n", (int)jumsu);
                     led(jumsu);
                 }
-                else if (Gcontact < 512)
+                else if (Gcontact < 420)
                 {
 
                     jumsu--;
