@@ -70,7 +70,6 @@ static void *Server_thread(void)
     } // closing the connected socket
 }
 
-
 // BGM start
 static void *Bgm_thread(void)
 {
@@ -78,12 +77,11 @@ static void *Bgm_thread(void)
 
     printf("buzzer on");
     buzzerInit();
-    
 
     while (1)
     {
         buzzerPlaySong(8);
-  
+
         // usleep(200000);
     }
 }
@@ -109,7 +107,7 @@ int main(int argc, char **argv)
     PE_init();
     led(jumsu);
     int charselect = 0;
-    
+
     dispaly_menu();
     charselect = select_player();
     if (charselect == 1)
@@ -126,88 +124,88 @@ int main(int argc, char **argv)
         printf("type ready to start : ");
         scanf("%s", servip);
     }
-    
+
     pthread_create(&BgmTh_id, NULL, Bgm_thread, NULL);
 
     while (charselect == 1)
     {
         c2s2.whichChar = 1;
-        c2s2.gyrodata =  -2 * get_dx();
+        update_whwhd();
+        update_screen();
+        c2s2.gyrodata = -2 * get_dx();
     }
-    
-    
-
 
     // 211.15
 
-    while (charselect ==2)
+    while (charselect == 2)
     {
-        if(c2s2.whichChar == 1){
-        mari_obj->vel.x = -2 * get_dx();
-       // maru_obj->vel.x = -2 * c2s2.gyrodata;
-        
-
-        calculateG(ball, 0.8);
-
-        int contact1 = CheckCollisionAnB(ball, mari_obj);
-        if (contact1 == 1)
+        if (c2s2.whichChar == 1)
         {
-            CheckImpulseAnB(ball, mari_obj);
-            contact1 = 0;
-        }
-        int contact2 = CheckCollisionAnB(ball, maru_obj);
-        if (contact2 == 1)
-        {
-            CheckImpulseAnB(ball, maru_obj);
-            contact2 = 0;
-        }
-        Gcontact = ContactGround(ball, 1);
-        if (Gcontact > 0)
-        {
+            mari_obj->vel.x = -2 * get_dx();
+            maru_obj->vel.x = -2 * c2s2.gyrodata;
 
-            if (Gcontact > 512)
+            calculateG(ball, 0.8);
+
+            int contact1 = CheckCollisionAnB(ball, mari_obj);
+            if (contact1 == 1)
             {
-                
-                jumsu ++;
-                printf("contaced");
-                printf("the score is %d\n", (int)jumsu);
-                led(jumsu);
+                CheckImpulseAnB(ball, mari_obj);
+                contact1 = 0;
             }
-            else if (Gcontact < 512)
+            int contact2 = CheckCollisionAnB(ball, maru_obj);
+            if (contact2 == 1)
             {
-                
-                jumsu --;
-                printf("contaced");
-                printf("the score is %d\n", (int)jumsu);
-                led(jumsu);
+                CheckImpulseAnB(ball, maru_obj);
+                contact2 = 0;
+            }
+            Gcontact = ContactGround(ball, 1);
+            if (Gcontact > 0)
+            {
+
+                if (Gcontact > 512)
+                {
+
+                    jumsu++;
+                    printf("contaced");
+                    printf("the score is %d\n", (int)jumsu);
+                    led(jumsu);
+                }
+                else if (Gcontact < 512)
+                {
+
+                    jumsu--;
+                    printf("contaced");
+                    printf("the score is %d\n", (int)jumsu);
+                    led(jumsu);
+                }
+            }
+            calculateP(ball);
+            calculateP(mari_obj);
+            calculateP(maru_obj);
+
+            CharContactEdge(mari_obj, maru_obj);
+            ballContactEdge(ball);
+            update_background();
+            update_ball((int)ball->pos.x, (int)ball->pos.y);
+            update_mari((int)mari_obj->pos.x, (int)mari_obj->pos.y);
+            update_maru((int)maru_obj->pos.x, (int)maru_obj->pos.y);
+            update_screen();
+            if (jumsu == 8)
+            {
+                update_win1();
+                update_screen();
+                buzzerStopSong();
+                break;
+            }
+            if (jumsu == 0)
+            {
+                update_win2();
+                update_screen();
+                buzzerStopSong();
+                break;
             }
         }
-        calculateP(ball);
-        calculateP(mari_obj);
-        calculateP(maru_obj);
-
-        CharContactEdge(mari_obj, maru_obj);
-        ballContactEdge(ball);
-        update_background();
-        update_ball((int)ball->pos.x, (int)ball->pos.y);
-        update_mari((int)mari_obj->pos.x, (int)mari_obj->pos.y);
-        update_maru((int)maru_obj->pos.x, (int)maru_obj->pos.y);
-        update_screen();
-        if(jumsu ==8)
-        {
-            update_win1();
-            update_screen();
-            buzzerStopSong();
-            break;
-        }
-        if(jumsu == 0)
-        {
-            update_win2();
-            update_screen();
-            buzzerStopSong();
-            break;
-        }
- }   }
+    }
 
     fb_close();
     // closing the listening socket
