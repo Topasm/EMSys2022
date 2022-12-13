@@ -180,7 +180,7 @@ int main(int argc, char **argv)
         c2s2.whichChar = 1;
         update_whwhd();
         update_screen();
-        c2s2.gyrodata = -2 * get_dx();
+        c2s2.gyrodata = 2 * get_dx();
     }
 
     // 211.15
