@@ -104,8 +104,13 @@ int main(int argc, char **argv)
     ledLibInit();
     fb_clear();
     png_init();
+    txtlcd_Init();
     PE_init();
     led(jumsu);
+    const char* str1 = "MARI MARU";
+	const char* str2 = "VOLLEYBALL";
+    lcdtextwrite(str1, str2,1);
+    lcdtextwrite(str1, str2,2);
     int charselect = 0;
 
     dispaly_menu();
@@ -113,6 +118,11 @@ int main(int argc, char **argv)
     if (charselect == 1)
     {
 
+        
+        const char* str1 = "player selected";
+	    const char* str2 = "MARU";
+        lcdtextwrite(str1, str2,1);
+        lcdtextwrite(str1, str2,2);
         printf("write your ip : ");
         scanf("%s", servip);
         printf("%s\n", servip);
@@ -121,6 +131,10 @@ int main(int argc, char **argv)
     else if (charselect == 2)
     {
         pthread_create(&ServerTh_id, NULL, Server_thread, NULL);
+        const char* str1 = "player selected";
+	    const char* str2 = "MARI";
+        lcdtextwrite(str1, str2,1);
+        lcdtextwrite(str1, str2,2);
         printf("type ready to start : ");
         scanf("%s", servip);
     }
