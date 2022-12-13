@@ -20,7 +20,7 @@ int client_init(char *servip)
         return -1;
     }
 
-    // Going to connet to the socket server using connect method
+    // 서버에 연결
     if ((client_file_descriptor = connect(sock, (struct sockaddr *)&server_address, sizeof(server_address))) < 0)
     {
         printf("\nConnection Failed with the server \n");
