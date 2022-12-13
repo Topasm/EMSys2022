@@ -131,6 +131,7 @@ int main(int argc, char **argv)
 
     while (charselect == 1)
     {
+        c2s2.whichChar = 1;
         c2s2.gyrodata =  -2 * get_dx();
     }
     
@@ -139,8 +140,9 @@ int main(int argc, char **argv)
 
     // 211.15
 
-    while (c2s2.whichChar == 1)
+    while (charselect ==2)
     {
+        if(c2s2.whichChar == 1){
         mari_obj->vel.x = -2 * get_dx();
        // maru_obj->vel.x = -2 * c2s2.gyrodata;
         
@@ -205,7 +207,7 @@ int main(int argc, char **argv)
             buzzerStopSong();
             break;
         }
-    }
+ }   }
 
     fb_close();
     // closing the listening socket
