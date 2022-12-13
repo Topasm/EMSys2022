@@ -108,32 +108,42 @@ int main(int argc, char **argv)
     png_init();
     PE_init();
     led(jumsu);
+    int charselect = 0;
     
     dispaly_menu();
-    c2s2.whichChar = select_player();
-    if (c2s2.whichChar == 1)
+    charselect = select_player();
+    if (charselect == 1)
     {
 
         printf("write your ip : ");
         scanf("%s", servip);
         printf("%s\n", servip);
-
         pthread_create(&rcv_thread, NULL, ClientThFunc, (void *)&sock);
     }
-    else if (c2s2.whichChar == 2)
+    else if (charselect == 2)
     {
         pthread_create(&ServerTh_id, NULL, Server_thread, NULL);
+        printf("type ready to start : ");
+        scanf("%s", servip);
     }
     
     pthread_create(&BgmTh_id, NULL, Bgm_thread, NULL);
+
+    while (charselect == 1)
+    {
+        c2s2.gyrodata =  -2 * get_dx();
+    }
+    
     
 
 
     // 211.15
 
-    while (1)
+    while (c2s2.whichChar == 1)
     {
         mari_obj->vel.x = -2 * get_dx();
+       // maru_obj->vel.x = -2 * c2s2.gyrodata;
+        
 
         calculateG(ball, 0.8);
 
@@ -181,21 +191,20 @@ int main(int argc, char **argv)
         update_mari((int)mari_obj->pos.x, (int)mari_obj->pos.y);
         update_maru((int)maru_obj->pos.x, (int)maru_obj->pos.y);
         update_screen();
-        if(jumsu ==5)
+        if(jumsu ==8)
         {
             update_win1();
             update_screen();
             buzzerStopSong();
             break;
         }
-        if(jumsu == 3)
+        if(jumsu == 0)
         {
             update_win2();
             update_screen();
             buzzerStopSong();
             break;
         }
-        c2s2.gyrodata = mari_obj->vel.x;
     }
 
     fb_close();
