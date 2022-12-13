@@ -33,15 +33,9 @@ static void *ClientThFunc(void)
 
     sock = client_init(servip);
 
-    // value_Read = recv(sock, (struct server2client *)&s2c, sizeof(s2c), 0);
-    // send message to socket server using send method
-    // printf("Message from Client Successfully Sent\n");
     while (1)
     {
-        // value_Read = read(sock, strCmd, 100);
-
-        send(sock, (struct client2server *)&c2s2, sizeof(c2s2), 0);
-        //
+        send(sock, (struct client2server *)&c2s2, sizeof(c2s2), 0); 
         printf("%d", c2s2.gyrodata);
         usleep(10000);
     }
@@ -50,7 +44,7 @@ static void *ClientThFunc(void)
 static void *Server_thread(void)
 {
     // while(1){을 돌면서 / read(); / msgsnd(); }
-    new_socket = server_init();
+    new_socket = server_init(); //소켓 파일 디스크립터 할당, 주소 할당(포트) 등등
     if (new_socket < 0)
     {
         printf("get server fail");
@@ -59,15 +53,12 @@ static void *Server_thread(void)
     while (1)
     {
         value_Read = recv(new_socket, (struct client2server *)&c2s2, sizeof(c2s2), 0);
-        // printf("Message from Client: %s \n", buffers); // 버퍼에 클라이언트 메세지 쓰여있음
         if (value_Read > 0)
         {
             printf("%d \n", c2s2.whichChar);
             printf("%d \n", c2s2.gyrodata);
         }
-
-        // printf("Message from Server is Sent to client\n");
-    } // closing the connected socket
+    } 
 }
 
 // BGM start
