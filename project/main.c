@@ -80,8 +80,43 @@ static void *Bgm_thread(void)
 
     while (1)
     {
-        buzzerPlaySong(8);
+        buzzerPlaySong(2);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(200000);
+        buzzerPlaySong(0);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(200000);
+        buzzerPlaySong(1);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(200000);
+        buzzerPlaySong(3);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(400000);
 
+        buzzerPlaySong(5);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(200000);
+        buzzerPlaySong(4);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(200000);
+        buzzerPlaySong(4);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(400000);
+
+        buzzerPlaySong(6);
+        usleep(200000);
+        buzzerStopSong();
+        usleep(200000);
+        buzzerPlaySong(5);
+        buzzerStopSong();
+        usleep(400000);
         // usleep(200000);
     }
 }
@@ -107,10 +142,10 @@ int main(int argc, char **argv)
     txtlcd_Init();
     PE_init();
     led(jumsu);
-    const char* str1 = "MARI MARU";
-	const char* str2 = "VOLLEYBALL";
-    lcdtextwrite(str1, str2,1);
-    lcdtextwrite(str1, str2,2);
+    const char *str1 = "MARI MARU";
+    const char *str2 = "VOLLEYBALL";
+    lcdtextwrite(str1, str2, 1);
+    lcdtextwrite(str1, str2, 2);
     int charselect = 0;
 
     dispaly_menu();
@@ -118,11 +153,10 @@ int main(int argc, char **argv)
     if (charselect == 1)
     {
 
-        
-        const char* str1 = "player selected";
-	    const char* str2 = "MARU";
-        lcdtextwrite(str1, str2,1);
-        lcdtextwrite(str1, str2,2);
+        const char *str1 = "player selected";
+        const char *str2 = "MARU";
+        lcdtextwrite(str1, str2, 1);
+        lcdtextwrite(str1, str2, 2);
         printf("write your ip : ");
         scanf("%s", servip);
         printf("%s\n", servip);
@@ -131,10 +165,10 @@ int main(int argc, char **argv)
     else if (charselect == 2)
     {
         pthread_create(&ServerTh_id, NULL, Server_thread, NULL);
-        const char* str1 = "player selected";
-	    const char* str2 = "MARI";
-        lcdtextwrite(str1, str2,1);
-        lcdtextwrite(str1, str2,2);
+        const char *str1 = "player selected";
+        const char *str2 = "MARI";
+        lcdtextwrite(str1, str2, 1);
+        lcdtextwrite(str1, str2, 2);
         printf("type ready to start : ");
         scanf("%s", servip);
     }
