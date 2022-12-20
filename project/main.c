@@ -16,7 +16,7 @@ static pthread_t thled;
 typedef struct client2server
 {
     int whichChar; // 어떤 캐릭터 선택
-    int gyrodata;
+    int gyrodata;  //자이로 데이터
 } c2s;
 
 c2s c2s2;
@@ -28,23 +28,23 @@ void PE_init()
     mari_obj = generate_character(120, 200);
     maru_obj = generate_character(720, 200);
 }
-static void *ClientThFunc(void)
+static void *ClientThFunc(void)   //클라이언트 함수
 {
 
     sock = client_init(servip);
 
     while (1)
     {
-        send(sock, (struct client2server *)&c2s2, sizeof(c2s2), 0); 
-        printf("%d", c2s2.gyrodata);
+        send(sock, (struct client2server *)&c2s2, sizeof(c2s2), 0);     //클라이언트에서 서버로 구조체 데이터 전송
+        printf("%d", c2s2.gyrodata);  //전송 내역 화면에 출력
         usleep(10000);
     }
 }
 
-static void *Server_thread(void)
+static void *Server_thread(void)  //서버 함수
 {
     // while(1){을 돌면서 / read(); / msgsnd(); }
-    new_socket = server_init(); //소켓 파일 디스크립터 할당, 주소 할당(포트) 등등
+    new_socket = server_init(); // 소켓 파일 디스크립터 할당, 주소 할당(포트) 
     if (new_socket < 0)
     {
         printf("get server fail");
@@ -52,13 +52,13 @@ static void *Server_thread(void)
 
     while (1)
     {
-        value_Read = recv(new_socket, (struct client2server *)&c2s2, sizeof(c2s2), 0);
+        value_Read = recv(new_socket, (struct client2server *)&c2s2, sizeof(c2s2), 0);   //클라이언트에서 보낸 데이터 읽음
         if (value_Read > 0)
         {
             printf("%d \n", c2s2.whichChar);
             printf("%d \n", c2s2.gyrodata);
         }
-    } 
+    }
 }
 
 // BGM start
@@ -133,15 +133,15 @@ int main(int argc, char **argv)
     txtlcd_Init();
     PE_init();
     led(jumsu);
-    const char *str1 = "MARI MARU";
-    const char *str2 = "VOLLEYBALL";
+    const char *str1 = "MARI MARU";    //textlcd 첫줄에 출력할 문구
+    const char *str2 = "VOLLEYBALL";   //textlcd 두번째줄에 출력할 문구
     lcdtextwrite(str1, str2, 1);
     lcdtextwrite(str1, str2, 2);
     int charselect = 0;
 
     dispaly_menu();
     charselect = select_player();
-    if (charselect == 1)
+    if (charselect == 1)  //1번 캐릭터 선택하면
     {
 
         const char *str1 = "player selected";
@@ -153,7 +153,7 @@ int main(int argc, char **argv)
         printf("%s\n", servip);
         pthread_create(&rcv_thread, NULL, ClientThFunc, (void *)&sock);
     }
-    else if (charselect == 2)
+    else if (charselect == 2)  //2번 캐릭터 선택하면
     {
         pthread_create(&ServerTh_id, NULL, Server_thread, NULL);
         const char *str1 = "player selected";
