@@ -38,3 +38,6 @@ There are famous game pikachu volleyball that everyone knows. So we implemented 
 - text lcd shows game start and charater select
 - button for character select
 
+
+## Video
+https://youtu.be/eyOu52lP6fk
